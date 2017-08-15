@@ -11,18 +11,19 @@ using std::cout;
 using std::endl;
 
 #define LOGNAME "./p2p_server.log"
+#define TICKS   5  // count down from TICKS to 0, then timeout.
 /* declare external variables */
 extern char message[IBUFSIZ];
-extern PEERSPUNCHED punchMap;
+extern PEERPUNCHEDTYPE punchMap;
 
-ostream & operator<<(ostream &out, PEERSETTYPE &hashSet);
-ostream & operator<<(ostream &out, PEERSPUNCHED &hashMap);
+ostream & operator<<(ostream &out, PEERTICKTYPE &clientMap);
+ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &punchMap);
 /* manipuate client set associated */
 void createClientSet();
-void addClient(PEERSETTYPE &hashSet, const PeerInfo &peer);
-void delClient(PEERSETTYPE &hashSet, const PeerInfo &peer);
-void listInfo2Str(PEERSETTYPE &hashSet, PEERSPUNCHED &hashMap, char *msg);
-void onCalled(int sockFd, PEERSETTYPE &hashSet, 
+void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
+void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
+void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap, char *msg);
+void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
               PktInfo &packet, PeerInfo &peer);
 
 #endif

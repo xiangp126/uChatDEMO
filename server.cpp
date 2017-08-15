@@ -4,17 +4,19 @@
 
 static ofstream logFile(LOGNAME, ofstream::app);
 
-ostream & operator<<(ostream &out, PEERSETTYPE &hashSet) {
+ostream & operator<<(ostream &out, PEERTICKTYPE &clientMap) {
     out << "----------->>> List" << endl;
-    for (auto &peer : hashSet) {
-        out << "  " << peer.ip << ":" << peer.port;
+    auto iter = clientMap.begin();
+    for (; iter != clientMap.end(); ++iter) {
+        out << "  " << iter->first.ip << ":" << iter->first.port;
         out << endl;
     }
+
     out << "<<< ---------------" << endl;
     return out;
 }
 
-ostream & operator<<(ostream &out, PEERSPUNCHED &hashMap) {
+ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &hashMap) {
     out << "----------->>> List" << endl;
     auto iter = hashMap.begin();
     for (; iter != hashMap.end(); ++iter) {
@@ -23,39 +25,37 @@ ostream & operator<<(ostream &out, PEERSPUNCHED &hashMap) {
     return out;
 }
 
-void createClientSet() {
-    // empty.
+/* unordered_map remove duplicate items */
+void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
+    clientMap[peer] = TICKS;
     return;
 }
 
-/* unordered_set remove duplicate items */
-void addClient(PEERSETTYPE &hashSet, const PeerInfo &peer) {
-    hashSet.insert(peer);
-    return;
-}
-
-void delClient(PEERSETTYPE &hashSet, const PeerInfo &peer) {
-    auto iter = hashSet.find(peer);    
-    if (iter != hashSet.end()) {
-        hashSet.erase(iter);
+void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
+    auto iterFind = clientMap.find(peer);
+    if (iterFind != clientMap.end()) {
+        clientMap.erase(iterFind);
     } else {
         write2Log(logFile, "delete peer error: did not found.");
     }
+
     return;
 }
 
-void listInfo2Str(PEERSETTYPE &hashSet, PEERSPUNCHED &hashMap, char *msg) {
+void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap, char *msg) {
     ostringstream oss;
     oss << "\n-------------- *** Login Info\n";
-    for (auto &peer : hashSet) {
-        oss << "  " << peer.ip << " " << peer.port << "\n";
+
+    auto iter1 = clientMap.begin();
+    for (; iter1 != clientMap.end(); ++iter1) {
+        oss << "  " << iter1->first.ip << " " << iter1->first.port << "\n";
     }
     oss << "*** ------------------" << endl;
 
     oss << "\n-------------------------- *** Punch Info\n";
-    auto iter = hashMap.begin();
-    for (; iter != hashMap.end(); ++iter) {
-        oss << iter->first << " ===>> " << iter->second << endl;
+    auto iter2 = punchMap.begin();
+    for (; iter2 != punchMap.end(); ++iter2) {
+        oss << iter2->first << " ===>> " << iter2->second << endl;
     }
     oss << "*** --------------------------------------" << endl;
 
@@ -64,7 +64,7 @@ void listInfo2Str(PEERSETTYPE &hashSet, PEERSPUNCHED &hashMap, char *msg) {
     return;
 }
 
-void onCalled(int sockFd, PEERSETTYPE &hashSet, 
+void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
                           PktInfo &packet, PeerInfo &peer) {
     char message[IBUFSIZ];
     memset(message, 0, IBUFSIZ);
@@ -94,19 +94,19 @@ void onCalled(int sockFd, PEERSETTYPE &hashSet,
             }
         case PKTTYPE::LOGIN: 
             {
-                addClient(hashSet, peer);
+                addClient(clientMap, peer);
                 cout << peer << " login." << endl;
                 break;
             }
         case PKTTYPE::LOGOUT: 
             {
-                delClient(hashSet, peer);
+                delClient(clientMap, peer);
                 cout << peer << " logout." << endl;
                 break;
             }
         case PKTTYPE::LIST: 
             {
-                listInfo2Str(hashSet, punchMap, message);
+                listInfo2Str(clientMap, punchMap, message);
                 makePacket(message, packet, PKTTYPE::MESSAGE);
                 udpSendPkt(sockFd, peer, packet);
                 break;

@@ -4,8 +4,8 @@
 #include "server.h"
 
 using namespace std;
-PEERSETTYPE  clientSet;
-PEERSPUNCHED punchMap;
+PEERTICKTYPE    clientMap;
+PEERPUNCHEDTYPE punchMap;
 
 int main(int argc, const char *argv[]) {
     int  sockFd = -1;
@@ -21,10 +21,9 @@ int main(int argc, const char *argv[]) {
     write(1, message, strlen(message));
     memset(message, 0, IBUFSIZ);
 
-    createClientSet();
 #if 1
     while (1) {
-        onCalled(sockFd, clientSet, packet, peer);
+        onCalled(sockFd, clientMap, packet, peer);
     }
 
     close(sockFd);
