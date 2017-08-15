@@ -159,52 +159,25 @@ void handleNet(int sockFd, PeerInfo &peer, PktInfo &packet) {
             break;
         case PKTTYPE::LOGOUT:
             break;
-        case PKTTYPE::PUNCH:
-            {
-                PeerInfo peer = packet.getHead().peer;
-                cout << "Peer " << peer << " Want To Chat With You." << endl;
-                cout << "By Default, Auto Send Accept." << endl;
-#if 0
-                cout << "Start To Punching..." << endl;
-                cout << packet << endl;
-                int cnt = 1;
-                while (cnt < 4) {
-                    cout << "Sending NO. " << cnt << " SYN Packet To Peer..."
-                                                                << endl;
-                    makePacket("SYN", packet, PKTTYPE::SYN);
-                    udpSendPkt(sockFd, peer, packet);
-                    ++cnt;
-                }
-#endif
-                break;
-            }
-        case PKTTYPE::SYN:
-            {
-#if 0
-                cout << "Wow! You Have Received SYN From " << peer << endl;
-                //cout << "Responding A ACK Packet..." << endl;
-                makePacket("ACK", packet, PKTTYPE::ACK);
-                udpSendPkt(sockFd, peer, packet);
-#endif
-                break;
-            }
         case PKTTYPE::ACK: 
             {
-#if 0
-                cout << "Wow! You Have Received ACK From " << peer << endl;
-                cout << "Starting Keep Alive Thread To " << peer << endl;
-                cout << packet << endl;
-                /* start thread of sending Heart Beat to peer */
-                pthread_mutex_lock(&pLock);
-                pGlobal = THREADSWITCH::CLIENTON;
-                pthread_mutex_unlock(&pLock);
-                pthread_cond_broadcast(&pCond);
-#endif
                 break;
             }
         case PKTTYPE::WHOAMI:
             cout << "You Are: " << packet.getHead().peer << endl;
             break;
+        case PKTTYPE::PUNCH:
+            {
+                PeerInfo peer = packet.getHead().peer;
+                cout << "Peer " << peer << " Want To Chat With You." << endl;
+                cout << "By Default, Auto Send Accept." << endl;
+                break;
+            }
+        case PKTTYPE::SYN:
+            {
+                peer = packet.getHead().peer;
+                //break;
+            }
         default:
             cout << "Message From " << peer << ": " << packet.getPayload() 
                                                     << endl;

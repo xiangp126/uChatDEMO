@@ -18,7 +18,6 @@ ostream & operator<<(ostream &out, PEERSPUNCHED &hashMap) {
     out << "----------->>> List" << endl;
     auto iter = hashMap.begin();
     for (; iter != hashMap.end(); ++iter) {
-        out << iter->first << " Punched To " << iter->second << endl;
     }
     out << "<<< ---------------" << endl;
     return out;
@@ -53,12 +52,12 @@ void listInfo2Str(PEERSETTYPE &hashSet, PEERSPUNCHED &hashMap, char *msg) {
     }
     oss << "*** ------------------" << endl;
 
-    oss << "\n-------------- *** Punch Info\n";
+    oss << "\n-------------------------- *** Punch Info\n";
     auto iter = hashMap.begin();
     for (; iter != hashMap.end(); ++iter) {
         oss << iter->first << " ===>> " << iter->second << endl;
     }
-    oss << "*** ------------------" << endl;
+    oss << "*** --------------------------------------" << endl;
 
     memset(msg, 0, IBUFSIZ);
     strcpy(msg, oss.str().c_str());
@@ -80,8 +79,11 @@ void onCalled(int sockFd, PEERSETTYPE &hashSet,
                                         packet.getPayload() << endl;
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
+                    /* type SYN to tell peer to fetch peerinfo from 
+                     * NET packet. */
+                    packet.getHead().type = PKTTYPE::SYN;
+                    packet.getHead().peer = peer;
                     udpSendPkt(sockFd, punchMap[peer], packet);
-                    peer = punchMap[peer];
                 }
                 break;
             }
@@ -114,6 +116,8 @@ void onCalled(int sockFd, PEERSETTYPE &hashSet,
                 cout << "From " << peer << " To " << packet.getHead().peer
                                                                    << endl;
                 PeerInfo tPeer  = packet.getHead().peer;
+                packet.getHead().peer = peer;
+                /* add to punchMap */
                 punchMap[peer]  = tPeer;
                 punchMap[tPeer] = peer;
                 cout << punchMap << endl;
