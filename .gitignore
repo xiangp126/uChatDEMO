@@ -1,0 +1,9 @@
+main
+core
+*.o
+*.swp
+*.pyc
+p2p_server.log
+p2pclient
+p2pserver
+!lib.o
