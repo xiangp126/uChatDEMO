@@ -52,10 +52,6 @@ int main(int argc, const char *argv[]) {
         oops("Create Heart Beat Thread to Server Error.");
     }
 
-    rc = pthread_create(&keepAliveTid, NULL, handleTicks, (void *)&clientMap);
-    if (rc != 0) {
-        oops("Create Keep Alive Thread Error.");
-
     promptInput();
     while (1) {
         FD_ZERO(&readFds);

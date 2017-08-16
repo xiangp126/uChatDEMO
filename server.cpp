@@ -213,11 +213,22 @@ void *handleTicks(void *arg) {
         while (iter != hashMap->end()) {
             --iter->second;
             if (iter->second < 0) {
+                PeerInfo peer = iter->first;
                 hashMap->erase(iter++);
+                /* check if punchMap still has this timeout info. */
+#if 1
+                cout << "Entering iterFind:" << endl;
+                auto iterFind = punchMap.find(peer);
+                if (iterFind != punchMap.end()) {
+                    cout << "Found peer: " << peer << endl;
+                    punchMap.erase(iterFind);
+                }
+#endif
             } else {
                 ++iter;
             }
         }
+
         pthread_mutex_unlock(&ticksLock);
 
         /* sleep 1 s before next lock action. sleep some time is must.*/
