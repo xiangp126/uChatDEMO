@@ -56,6 +56,7 @@ namespace myspace {
         SYN,
         ACK,
         WHOAMI,
+        ERROR,
         EXIT,
         MAXPKTTYPE
     };
@@ -82,9 +83,6 @@ extern const char *CMDS[PKTTYPE::MAXPKTTYPE];
 extern pthread_mutex_t pLock;
 extern pthread_cond_t  pCond;
 extern int pGlobal;
-extern pthread_mutex_t keepLock;
-extern pthread_cond_t  keepCond;
-extern int keepGlobal;
 
 #if 1
 /* PeerInfo is self-defined structure, so did not originally has

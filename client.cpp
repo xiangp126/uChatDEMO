@@ -3,9 +3,6 @@
 
 using namespace std;
 
-/* command 'kill -l' will display all signals on unix-like. */
-//signal();
-
 PKTTYPE checkCmd(char *cmd, PktInfo &packet) {
     PKTTYPE type = PKTTYPE::MESSAGE;
     /* distinguish 'login' and ' login', the former is command
@@ -23,18 +20,8 @@ PKTTYPE checkCmd(char *cmd, PktInfo &packet) {
 #endif
     /* case ignorance string compare. */
     if (strcasecmp(fWord, CMDS[PKTTYPE::LOGIN]) == 0) {
-        /* start thread of sending Heart Beat to server */
-        pthread_mutex_lock(&pLock);
-        pGlobal = THREADSWITCH::SERVERON;
-        pthread_mutex_unlock(&pLock);
-        pthread_cond_broadcast(&pCond);
         type = PKTTYPE::LOGIN;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::LOGOUT]) == 0) {
-        /* suspend thread of sending Heart Beat to server */
-        pthread_mutex_lock(&pLock);
-        pGlobal = THREADSWITCH::ALLOFF;
-        pthread_mutex_unlock(&pLock);
-        pthread_cond_broadcast(&pCond);
         type = PKTTYPE::LOGOUT;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::LIST]) == 0) {
         type = PKTTYPE::LIST;
@@ -82,21 +69,6 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
      */
     msg[rdSize - 1] = '\0';   /* remove last '\n' */
 
-#if 0
-    /* start heart beat thread to peer client.
-     */
-    memset(&heartBClient, 0, sizeof(heartBClient));
-    heartBClient.sockFd = sockFd;
-    heartBClient.sleep  = 1000 * 1000; // 1000 ms 
-    heartBClient.peer   = &peer;
-    heartBClient.tsType = THREADSWITCH::ISCLIENT;
-    rc = pthread_create(&tids[SERVERTID], NULL, sendHeartBeat, 
-                                          (void *)&heartBClient);
-    if (rc != 0) {
-        oops("Heart Beat pthread_create to client error.");
-    }
-#endif
-
     /* make packet of relative type, default is PKTTYPE::MESSAGE */
     type = checkCmd(msg, packet);
     makePacket(msg, packet, type);
@@ -113,9 +85,23 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
             //cout << "Message To   " << peer << ": " << msg << endl;
             break;
         case PKTTYPE::LOGIN:
-            break;
+            {
+                /* start thread of sending Heart Beat to server */
+                pthread_mutex_lock(&pLock);
+                pGlobal = THREADSWITCH::SERVERON;
+                pthread_mutex_unlock(&pLock);
+                pthread_cond_broadcast(&pCond);
+                break;
+            }
         case PKTTYPE::LOGOUT:
-            break;
+            {
+                /* suspend thread of sending Heart Beat to server */
+                pthread_mutex_lock(&pLock);
+                pGlobal = THREADSWITCH::ALLOFF;
+                pthread_mutex_unlock(&pLock);
+                pthread_cond_broadcast(&pCond);
+                break;
+            }
         case PKTTYPE::PUNCH:
             {
                 rc = setPunchInfo(msg, packet);
@@ -173,10 +159,17 @@ void handleNet(int sockFd, PeerInfo &peer, PktInfo &packet) {
                 cout << "By Default, Auto Send Accept." << endl;
                 break;
             }
+        case PKTTYPE::ERROR:
+            {
+                cout << "NOTICE: " << packet.getPayload() << endl;
+                break;
+            }
         case PKTTYPE::SYN:
             {
                 peer = packet.getHead().peer;
-                //break;
+                cout << "Message From " << peer << ": " << packet.getPayload()
+                                                        << endl;
+                break;
             }
         default:
             cout << "Message From " << peer << ": " << packet.getPayload() 

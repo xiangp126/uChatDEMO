@@ -10,7 +10,6 @@ int main(int argc, const char *argv[]) {
     struct   hostent *hp;
     struct   timeval timeout;
     struct   HeartParm heartBServer;
-    struct   HeartParm heartBClient;
     int      retVal = -1, rc;
     int      maxFd  = 0;
     int      sockFd  = -1;
@@ -40,26 +39,17 @@ int main(int argc, const char *argv[]) {
      */
     memset(&heartBServer, 0, sizeof(heartBServer));
     heartBServer.sockFd = sockFd;
+    /* if you want to change default heart beat interval, change this 
+     * below variable with unit us. */
     heartBServer.sleep  = 2000 * 1000; // 2000 ms 
     heartBServer.peer   = &server;
     heartBServer.tsType = THREADSWITCH::ISSERVER;
+    /* already initiated server heart thread, but need additional global
+     * variable to lock / unlock this thread. */
     rc = pthread_create(&tids[SERVERTID], NULL, sendHeartBeat, 
                                           (void *)&heartBServer);
     if (rc != 0) {
         oops("Create Heart Beat pthread_create to server error.");
-    }
-
-    /* initial heart beat thread to peer.
-     */
-    memset(&heartBClient, 0, sizeof(heartBClient));
-    heartBClient.sockFd = sockFd;
-    heartBClient.sleep  = 2000 * 1000; // 2000 ms 
-    heartBClient.peer   = &server;
-    heartBClient.tsType = THREADSWITCH::ISCLIENT;
-    rc = pthread_create(&tids[CLIENTTID], NULL, sendHeartBeat, 
-                                          (void *)&heartBClient);
-    if (rc != 0) {
-        oops("Create Heart Beat pthread_create to peer error.");
     }
 
     promptInput();

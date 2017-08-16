@@ -2,6 +2,9 @@
 #include "common.h"
 #include "server.h"
 
+pthread_mutex_t ticksLock = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  ticksCond = PTHREAD_COND_INITIALIZER;
+
 static ofstream logFile(LOGNAME, ofstream::app);
 
 ostream & operator<<(ostream &out, PEERTICKTYPE &clientMap) {
@@ -27,35 +30,45 @@ ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &hashMap) {
 
 /* unordered_map remove duplicate items */
 void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
-    clientMap[peer] = TICKS;
+    pthread_mutex_lock(&ticksLock);
+    clientMap[peer] = TICKS_INI;
+    pthread_mutex_unlock(&ticksLock);
+
     return;
 }
 
 void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
+    pthread_mutex_lock(&ticksLock);
     auto iterFind = clientMap.find(peer);
     if (iterFind != clientMap.end()) {
         clientMap.erase(iterFind);
     } else {
         write2Log(logFile, "delete peer error: did not found.");
     }
+    pthread_mutex_unlock(&ticksLock);
 
     return;
 }
 
-void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap, char *msg) {
+void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
+                                           char *msg) {
     ostringstream oss;
-    oss << "\n-------------- *** Login Info\n";
+    oss << "\n-------------------------- *** Login Info\n";
 
     auto iter1 = clientMap.begin();
     for (; iter1 != clientMap.end(); ++iter1) {
-        oss << "  " << iter1->first.ip << " " << iter1->first.port << "\n";
+        oss << "  " << iter1->first.ip << " " << iter1->first.port 
+            << "  " << " ===>> " << "  TTL: " << iter1->second << "\n";
     }
-    oss << "*** ------------------" << endl;
+    oss << "*** ------------------------------" << endl;
 
     oss << "\n-------------------------- *** Punch Info\n";
     auto iter2 = punchMap.begin();
     for (; iter2 != punchMap.end(); ++iter2) {
-        oss << iter2->first << " ===>> " << iter2->second << endl;
+        oss << "  " << iter2->first.ip << " " << iter2->first.port 
+            << "  " << " ===>> " 
+            << "  " << iter2->second.ip << " " << iter2->second.port
+            << endl;
     }
     oss << "*** --------------------------------------" << endl;
 
@@ -75,8 +88,7 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
         case PKTTYPE::MESSAGE: 
             {
                 /* check if peer has puncued pair. */
-                cout << "Message From " << peer << ": " << 
-                                        packet.getPayload() << endl;
+                cout << "Message From " << peer << ". " << endl; 
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
                     /* type SYN to tell peer to fetch peerinfo from 
@@ -89,6 +101,12 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
             }
         case PKTTYPE::HEARTBEAT: 
             {
+                auto iterFind = clientMap.find(peer);
+                if (iterFind != clientMap.end()) {
+                    iterFind->second = TICKS_INI;
+                } else {
+                    addClient(clientMap, peer);
+                }
                 cout << "Heart Beat Received From " << peer << endl;
                 break;
             }
@@ -113,9 +131,21 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
             }
         case PKTTYPE::PUNCH: 
             {
-                cout << "From " << peer << " To " << packet.getHead().peer
-                                                                   << endl;
-                PeerInfo tPeer  = packet.getHead().peer;
+                PeerInfo tPeer = packet.getHead().peer;
+                cout << "From " << peer << " To " << tPeer << endl;
+
+                /* check if both peer and tPeer has logined. */
+                auto iterFind = clientMap.find(peer);
+                auto pFind = clientMap.find(tPeer);
+                if (iterFind == clientMap.end() 
+                                  || pFind == clientMap.find(tPeer)) {
+                    strcpy(message, "First, You Two Must Be All Logined.\
+                                                \nJust Type 'list' to See Info.");
+                    makePacket(message, packet, PKTTYPE::ERROR);
+                    udpSendPkt(sockFd, peer, packet);
+                    break;
+                }
+
                 packet.getHead().peer = peer;
                 /* add to punchMap */
                 punchMap[peer]  = tPeer;
@@ -149,5 +179,33 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
     cout << packet << "\n" << endl;
 #endif
        return;
+}
+
+void *handleTicks(void *arg) {
+    PEERTICKTYPE *hashMap = (PEERTICKTYPE *)arg;
+    while (1) {
+        cout << "\nI am handleTicks: " << endl;
+
+        pthread_mutex_lock(&ticksLock);
+        /* Erasing an element of a map invalidates iterators pointing
+         * to that element (after all that element has been deleted).
+         * You shouldn't reuse that iterator, instead, advance the 
+         * iterator to the next element before the deletion takes place.
+         */
+        auto iter = hashMap->begin();
+        while (iter != hashMap->end()) {
+            --iter->second;
+            if (iter->second < 0) {
+                hashMap->erase(iter++);
+            } else {
+                ++iter;
+            }
+        }
+        pthread_mutex_unlock(&ticksLock);
+
+        /* sleep 1 s before next lock action. sleep some time is must.*/
+        sleep(1);
+    }
+    return NULL;
 }
 

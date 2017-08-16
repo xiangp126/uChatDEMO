@@ -15,14 +15,12 @@ const char *CMDS[] = {
     "SYN",
     "ACK",
     "WHOAMI",
+    "ERROR",
     "EXIT"
 };
 pthread_mutex_t pLock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t  pCond = PTHREAD_COND_INITIALIZER;
-pthread_mutex_t keepLock = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t  keepCond = PTHREAD_COND_INITIALIZER;
 int pGlobal = THREADSWITCH::ALLOFF;
-int keepGlobal = THREADSWITCH::ALLOFF;
 
 /* implement class PktInfo */
 PktInfo::PktInfo() {

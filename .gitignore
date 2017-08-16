@@ -2,6 +2,7 @@ main
 core
 *.o
 *.swp
+*.swo
 *.pyc
 p2p_server.log
 p2pclient

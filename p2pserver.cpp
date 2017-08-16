@@ -21,6 +21,8 @@ int main(int argc, const char *argv[]) {
     write(1, message, strlen(message));
     memset(message, 0, IBUFSIZ);
 
+    /* handle keep alive thread on server. */
+
 #if 1
     while (1) {
         onCalled(sockFd, clientMap, packet, peer);
