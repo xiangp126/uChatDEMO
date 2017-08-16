@@ -50,6 +50,15 @@ void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
     return;
 }
 
+/* till now, did not use this function. */
+void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&lock, &attr);
+    
+    return;
+}
+
 void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
                                            char *msg) {
     ostringstream oss;
@@ -86,8 +95,6 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
 
     ssize_t recvSize = udpRecvPkt(sockFd, peer, packet);
     PKTTYPE type = packet.getHead().type;
-
-    cout << "I am onCalled. " << endl;
 
     switch (type) {
         case PKTTYPE::MESSAGE: 
@@ -149,9 +156,9 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 auto iterFind = clientMap.find(peer);
                 auto pFind = clientMap.find(tPeer);
                 if ((iterFind == clientMap.end()) 
-                                  || (pFind == clientMap.find(tPeer))) {
+                                  || (pFind == clientMap.end())) {
                     strcpy(message, "First, You Two Must All Be Logined.\
-                                                \nJust Type 'list' to See Info.");
+                                            \nJust Type 'list' to See Info.");
                     makePacket(message, packet, PKTTYPE::ERROR);
                     udpSendPkt(sockFd, peer, packet);
                     break;
@@ -217,13 +224,5 @@ void *handleTicks(void *arg) {
         sleep(1);
     }
     return NULL;
-}
-
-void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
-    pthread_mutexattr_init(&attr);
-    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-    pthread_mutex_init(&lock, &attr);
-    
-    return;
 }
 
