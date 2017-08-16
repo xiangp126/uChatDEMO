@@ -49,7 +49,7 @@ int main(int argc, const char *argv[]) {
     rc = pthread_create(&tids[SERVERTID], NULL, sendHeartBeat, 
                                           (void *)&heartBServer);
     if (rc != 0) {
-        oops("Create Heart Beat pthread_create to server error.");
+        oops("Create Heart Beat Thread to Server Error.");
     }
 
     promptInput();

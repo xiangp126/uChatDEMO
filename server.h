@@ -15,8 +15,8 @@ using std::endl;
 /* declare external variables */
 extern char message[IBUFSIZ];
 extern PEERPUNCHEDTYPE punchMap;
-extern pthread_mutex_t ticksLock;
-extern pthread_cond_t  ticksCond;
+extern pthread_mutex_t     ticksLock;
+extern pthread_mutexattr_t tickLockAttr;
 
 ostream & operator<<(ostream &out, PEERTICKTYPE &clientMap);
 ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &punchMap);
@@ -27,5 +27,7 @@ void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
 void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap, char *msg);
 void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
               PktInfo &packet, PeerInfo &peer);
+void *handleTicks(void *arg);
+void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr);
 
 #endif

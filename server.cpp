@@ -2,8 +2,8 @@
 #include "common.h"
 #include "server.h"
 
-pthread_mutex_t ticksLock = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t  ticksCond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t ticksLock;
+pthread_mutexattr_t tickLockAttr;
 
 static ofstream logFile(LOGNAME, ofstream::app);
 
@@ -55,6 +55,7 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
     ostringstream oss;
     oss << "\n-------------------------- *** Login Info\n";
 
+    pthread_mutex_lock(&ticksLock);
     auto iter1 = clientMap.begin();
     for (; iter1 != clientMap.end(); ++iter1) {
         oss << "  " << iter1->first.ip << " " << iter1->first.port 
@@ -70,6 +71,7 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
             << "  " << iter2->second.ip << " " << iter2->second.port
             << endl;
     }
+    pthread_mutex_unlock(&ticksLock);
     oss << "*** --------------------------------------" << endl;
 
     memset(msg, 0, IBUFSIZ);
@@ -84,29 +86,37 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
 
     ssize_t recvSize = udpRecvPkt(sockFd, peer, packet);
     PKTTYPE type = packet.getHead().type;
+
+    cout << "I am onCalled. " << endl;
+
     switch (type) {
         case PKTTYPE::MESSAGE: 
             {
-                /* check if peer has puncued pair. */
+                /* check if peer has punched pair. */
                 cout << "Message From " << peer << ". " << endl; 
+                pthread_mutex_lock(&ticksLock);
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
-                    /* type SYN to tell peer to fetch peerinfo from 
-                     * NET packet. */
+                    /* TYPE SYN inform peer to fetch getHead().peer info 
+                     * from NET packet in addition with peer info. */
                     packet.getHead().type = PKTTYPE::SYN;
                     packet.getHead().peer = peer;
                     udpSendPkt(sockFd, punchMap[peer], packet);
                 }
+                pthread_mutex_unlock(&ticksLock);
                 break;
             }
         case PKTTYPE::HEARTBEAT: 
             {
+                pthread_mutex_lock(&ticksLock);
                 auto iterFind = clientMap.find(peer);
                 if (iterFind != clientMap.end()) {
                     iterFind->second = TICKS_INI;
                 } else {
+                    /* reentrant lock. */
                     addClient(clientMap, peer);
                 }
+                pthread_mutex_unlock(&ticksLock);
                 cout << "Heart Beat Received From " << peer << endl;
                 break;
             }
@@ -135,11 +145,12 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 cout << "From " << peer << " To " << tPeer << endl;
 
                 /* check if both peer and tPeer has logined. */
+                pthread_mutex_lock(&ticksLock);
                 auto iterFind = clientMap.find(peer);
                 auto pFind = clientMap.find(tPeer);
-                if (iterFind == clientMap.end() 
-                                  || pFind == clientMap.find(tPeer)) {
-                    strcpy(message, "First, You Two Must Be All Logined.\
+                if ((iterFind == clientMap.end()) 
+                                  || (pFind == clientMap.find(tPeer))) {
+                    strcpy(message, "First, You Two Must All Be Logined.\
                                                 \nJust Type 'list' to See Info.");
                     makePacket(message, packet, PKTTYPE::ERROR);
                     udpSendPkt(sockFd, peer, packet);
@@ -151,8 +162,9 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 punchMap[peer]  = tPeer;
                 punchMap[tPeer] = peer;
                 cout << punchMap << endl;
+                pthread_mutex_unlock(&ticksLock);
 
-                /* notice be punched peer. */
+                /* notice the punched peer. */
                 udpSendPkt(sockFd, tPeer, packet);
                 break;
             }
@@ -184,8 +196,6 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
 void *handleTicks(void *arg) {
     PEERTICKTYPE *hashMap = (PEERTICKTYPE *)arg;
     while (1) {
-        cout << "\nI am handleTicks: " << endl;
-
         pthread_mutex_lock(&ticksLock);
         /* Erasing an element of a map invalidates iterators pointing
          * to that element (after all that element has been deleted).
@@ -207,5 +217,13 @@ void *handleTicks(void *arg) {
         sleep(1);
     }
     return NULL;
+}
+
+void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&lock, &attr);
+    
+    return;
 }
 
