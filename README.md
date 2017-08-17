@@ -2,7 +2,9 @@
 
 ## Intro
 
-p2p_communication-demo is a demo tool for study or research on peer to peer communication mechanism through NAT. which is a lightweight tool easy to distribute.
+p2p_communication-demo is a demo tool for study or research on peer to peer 
+communication mechanism through NAT. which is a lightweight tool easy to 
+distribute.
 
 It is part of the p2p_communication-libev, this version 'demo' was implemented
 using mid-man transfer, which was the easiest but most robust method.
@@ -12,13 +14,16 @@ will update version of p2p_communication-demo.
 
 Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
-Travis CI: [![Travis CI](https://travis-ci.org/shadowsocks/shadowsocks-libev.svg?branch=master)](https://travis-ci.org/shadowsocks/shadowsocks-libev)
-
 ## Features
 
-p2p_communication-demo is written in C++ and dependes on [libev](http://software.schmorp.de/pkg/libev.html). It's designed to be a lightweight implementation of chat mechanism through Internet, in order to keep the resource usage as low as possible.
+p2p_communication-demo is written in C++ and was only tried on Linux-Like 
+platform. It's designed to be a lightweight implementation of chat mechanism
+through Internet, in order to keep the resource usage as low as possible.
 
 ## Prerequisites
+
+You should distributed it on Linux-like enviroment, and C++ compile like g++
+must support C++11, C++0x is not enough.
 
 ### Get the latest source code
 
@@ -103,60 +108,22 @@ The latest shadowsocks-libev has provided a *redir* mode. You can configure your
 
     # Create new chain
     root@Wrt:~# iptables -t nat -N SHADOWSOCKS
-    root@Wrt:~# iptables -t mangle -N SHADOWSOCKS
-    root@Wrt:~# iptables -t mangle -N SHADOWSOCKS_MARK
 
-    # Ignore your shadowsocks server's addresses
-    # It's very IMPORTANT, just be careful.
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 123.123.123.123 -j RETURN
+## Setup P2P_Communication-Demo
 
-    # Ignore LANs and any other addresses you'd like to bypass the proxy
-    # See Wikipedia and RFC5735 for full list of reserved networks.
-    # See ashi009/bestroutetb for a highly optimized CHN route list.
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 0.0.0.0/8 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 10.0.0.0/8 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 127.0.0.0/8 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 169.254.0.0/16 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 172.16.0.0/12 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 192.168.0.0/16 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 224.0.0.0/4 -j RETURN
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -d 240.0.0.0/4 -j RETURN
-
-    # Anything else should be redirected to shadowsocks's local port
-    root@Wrt:~# iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 12345
-
-    # Add any UDP rules
-    root@Wrt:~# ip route add local default dev lo table 100
-    root@Wrt:~# ip rule add fwmark 1 lookup 100
-    root@Wrt:~# iptables -t mangle -A SHADOWSOCKS -p udp --dport 53 -j TPROXY --on-port 12345 --tproxy-mark 0x01/0x01
-    root@Wrt:~# iptables -t mangle -A SHADOWSOCKS_MARK -p udp --dport 53 -j MARK --set-mark 1
-
-    # Apply the rules
-    root@Wrt:~# iptables -t nat -A OUTPUT -p tcp -j SHADOWSOCKS
-    root@Wrt:~# iptables -t mangle -A PREROUTING -j SHADOWSOCKS
-    root@Wrt:~# iptables -t mangle -A OUTPUT -j SHADOWSOCKS_MARK
-
-    # Start the shadowsocks-redir
-    root@Wrt:~# ss-redir -u -c /etc/config/shadowsocks.json -f /var/run/shadowsocks.pid
-
-## Shadowsocks over KCP
-
-It's quite easy to use shadowsocks and [KCP](https://github.com/skywind3000/kcp) together with [kcptun](https://github.com/xtaci/kcptun).
-
-The goal of shadowsocks over KCP is to provide a fully configurable, UDP based protocol to improve poor connections, e.g. a high packet loss 3G network.
+It's quite easy to use this demo, it did not waste you much time to distribute.
 
 ### Setup your server
 
 ```bash
-server_linux_amd64 -l :21 -t 127.0.0.1:443 --crypt none --mtu 1200 --nocomp --mode normal --dscp 46 &
-ss-server -s 0.0.0.0 -p 443 -k passwd -m chacha20 -u
+on server:
+./p2pserver
 ```
 
 ### Setup your client
 
 ```bash
-client_linux_amd64 -l 127.0.0.1:1090 -r <server_ip>:21 --crypt none --mtu 1200 --nocomp --mode normal --dscp 46 &
-ss-local -s 127.0.0.1 -p 1090 -k passwd -m chacha20 -l 1080 -b 0.0.0.0 &
-ss-local -s <server_ip> -p 443 -k passwd -m chacha20 -l 1080 -U -b 0.0.0.0
+on client:
+./p2pclient [SERVER_IP] [SERVER_PORT]
 ```
 
