@@ -5,30 +5,38 @@ using namespace std;
 
 void usage(void) {
     fprintf(stderr,
-"usage: COMMAND [PARAM]\n"
-"       type COMMANDS before any word you typed. If you want to type COMMANDS\n"
-"       as a word itself, just leave a blank before it. Default you chat with\n"
-"       the server, after punched, you chat directly with the peer you punched.\n\n"
+"NAME\n"
+"    p2pclient --- Client End of Peer to Peer communication Through NAT\n\n"
 
-"COMMANDS:\n"
+"USAGE\n"
+"    >>> COMMAND [PARAM]\n"
+"    type COMMANDS before any word you typed. If you want to type COMMANDS\n"
+"    as a word itself, just leave a blank before it. Default you chat with\n"
+"    the server, after punched, you chat directly with the peer you punched.\n\n"
+
+"SYNOPSIS:\n"
 "    help\n"
 "    list\n"
 "    whoami\n"
 "    punch [ip] [port]\n" 
 "    login\n"
 "    logout\n"
-"    exit\n"
+"    exit\n\n"
     
-"SYNOPSIS:\n"
-"    HELP:   print help info.\n"
-"    LIST:   print logined & punched info.\n"
+"DESCRIPTION\n"
+"    HELP:   print this help info, you can type 'help' when needed.\n"
+"    LIST:   print logined and punched info. It's useful before 'punch'.\n"
 "    WHOAMI: show who you are, namely the ip address & port through NAT.\n"
 "    PUNCH:  establish connection between you and the peer you want to talk with.\n"
 "            After punched, you talked directly to punched peer.\n"
 "            punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
 "    LOGIN:  login you existence to the server, may type 'list' when logined.\n"
 "    LOGOUT: clear your login info on the server.\n" 
-"    EXIT:   exit this program on your machine, same as CTRL + D.\n"
+"    EXIT:   exit this program on your machine, same as CTRL + D.\n\n"
+
+"AUTHORS\n"
+"       p2pclient is a DEMO for either further study or research purpose, you\n"
+"       can modify or redistribute it whatever you want.\n"
     );
 
     return;
@@ -138,8 +146,8 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
             {
                 rc = setPunchInfo(msg, packet);
                 if (rc == -1) {
-                    cout << "Did Not Leave blank before punch &.\n";
-                    cout << "Format: punch 127.0.0.1 18974" << endl;
+                    cout << "Usage Format: punch 127.0.0.1 18974" << endl;
+                    cout << "Notice Not Leave any blank before 'punch'.\n";
                     return; 
                 }
                 int cnt = 0, MAXTRY = 1;
