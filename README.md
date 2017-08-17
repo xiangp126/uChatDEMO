@@ -11,11 +11,13 @@ It is part of the p2p_communication-libev, which was updated Version of this Dem
 
 You May Need These Basic Requirement to Read This Source:
 
-* Basic Linux Knowledge and Platform Usage Experience
+* Basic Linux Knowledge and Platform(CentOS/ArchLinux) Usage Experience
+* Basic Linux System Programming Skills, Such As:
+  + Lock and Condition Variable Usage, Reentrant Lock
+  + Synchronous I/O Multiplexing, select/poll/epoll and so on
+  + Thread Programming, Thread 'Suspend' from Outer
 * Basic Network Layer and Packet Structure Concept
-* Linux Lock & Attr Usage, Reentrant Lock
-* Thread Programming, Thread 'Suspend' from Outer
-* Socket Programming, Basic Network Programming Knowledge
+* Socket Programming, Basic Network Coding Knowledge
 * Basic C++ STL Knowledge, Such As unordered_map
 
 Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
