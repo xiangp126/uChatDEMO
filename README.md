@@ -13,7 +13,7 @@ Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Features
 
-This was Implemented In C++, In general, has follow features:
+This Demo was Implemented In C++, In general, has following features:
 
 * Whoami Client Query Support
 * RealTime Login & Punched Info Output
@@ -134,8 +134,29 @@ By Default, Auto Send Accept.
 
 ```
 
-### Client Side
+### Server Side
+
 ```bash
+
+Head Type = MESSAGE
+Payload length = 347 (Had + '\0')
+Head PeerInfo = (0.0.0.0 0)
+Packet Payload:
+-------------------------- *** Login Info
+  10.124.10.102 38397   ===>>   TTL: 9
+  10.124.10.102 33878   ===>>   TTL: 8
+*** ------------------------------
+
+-------------------------- *** Punch Info
+  10.124.10.102 38397   ===>>   10.124.10.102 33878
+  10.124.10.102 33878   ===>>   10.124.10.102 38397
+*** --------------------------------------
+
+Heart Beat Received From (10.124.10.102 33878)
+Head Type = HEARTBEAT
+Payload length = 11 (Had + '\0')
+Head PeerInfo = (0.0.0.0 0)
+Packet Payload: HI Server.
 
 ```
 
