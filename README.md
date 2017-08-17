@@ -4,10 +4,10 @@
 
 It is a Demo Tool for studying peer to peer communication through NAT. 
 
-As Demo Implied, This Version Was Implemented Using Mid-man Transfer, Which Was The Easiest But 
-Relativly robust Method.
+As name Demo implied, this tool was Implemented using mid-man Transfer, which was the relatively
+easy but robust method.
 
-It Is Part of The p2p_communication-libev, Which Was Updated Version of This p3p_communication-demo.
+It is part of the p2p_communication-libev, which was updated Version of this Demo.
 
 You May Need These Basic Requirement to Read This Source:
 
