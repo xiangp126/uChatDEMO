@@ -1,13 +1,20 @@
 # p2p_communication-demo
 
-## Intro
+## Design
 
-p2p_communication-demo is a demo tool for study or research on peer to peer communication mechanism through NAT. 
+It is a Demo Tool for studying peer to peer communication through NAT. 
 
-It is part of the p2p_communication-libev, this version 'demo' was implemented
-using mid-man transfer, which was the easiest but most robust method.
+As Demo Implied, This Version Was Implemented Using Mid-man Transfer, Which Was The Easiest But 
+Relativly robust Method.
 
-Further, I will try to implement steady version p2p_communication-libev, which was updated version of this p2p_communication-demo.
+It Is Part of The p2p_communication-libev, Which Was Updated Version of This p3p_communication-demo.
+
+You May Need These Basic Requirement to Read This Source:
+
+* Basic Linux Knowledge and Platform Usage Experience
+* Linux Lock & Attr Usage, Reentrant Lock
+* Thread Programming, Thread 'Suspend' from Outer
+* Socket Programming, Basic Network Programming Knowledge
 
 Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
@@ -166,6 +173,7 @@ Packet Payload: HI Server.
 
 You should distribute it on Linux-like enviroment, and C++ compile such as g++
 must support C++11.
+
 Only C++0x support may not be enough.
 
 ### Get the latest source code
