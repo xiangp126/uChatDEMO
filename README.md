@@ -2,7 +2,7 @@
 
 ## Intro
 
-p2p_communication-demo is a demo tool for study or research on peer to peer communication mechanism through NAT. which is a lightweight tool very easy to distribute.
+p2p_communication-demo is a demo tool for study or research on peer to peer communication mechanism through NAT. 
 
 It is part of the p2p_communication-libev, this version 'demo' was implemented
 using mid-man transfer, which was the easiest but most robust method.
@@ -13,8 +13,14 @@ Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Features
 
-p2p_communication-demo is written in C++ and was only tested on Linux-Like platform. 
-It's designed to be a lightweight implementation of chat mechanism through Internet, in order to keep the resource usage as low as possible.
+This was Implemented In C++, In general, has follow features:
+
+* Whoami Client Query Support
+* RealTime Login & Punched Info Output
+* KeepAlive Mechanism from Client to Server
+* Dynamic Connection Establishment
+* Directly peer to peer chat, without any redundant command word.
+* Pretty Print on Server Side Message
 
 ## Usage
 
