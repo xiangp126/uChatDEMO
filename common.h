@@ -57,6 +57,7 @@ namespace myspace {
         ACK,
         WHOAMI,
         ERROR,
+        HELP,
         EXIT,
         MAXPKTTYPE
     };

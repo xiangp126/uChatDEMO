@@ -61,10 +61,7 @@ int main(int argc, const char *argv[]) {
         timeout.tv_sec  = 30;
         timeout.tv_usec = 0;
         retVal = select(maxFd, &readFds, NULL, NULL, &timeout);
-        /* -1 error, 0 timeout */
-        if (retVal == -1) {
-            oops("select error");
-        }
+        /* > 0 on success, -1 error, 0 timeout */
         if (retVal > 0) {
             if (FD_ISSET(readFd1, &readFds)) {
                 handleInput(sockFd, server, packet);
@@ -73,6 +70,8 @@ int main(int argc, const char *argv[]) {
                 handleNet(sockFd, peer, packet);
             }
             promptInput();
+        } else if (retVal == -1) {
+            oops("select error");
         } else {
             //fprintf(stderr, "No Input after %d seconds\n", TIMEOUT);
         }

@@ -3,6 +3,37 @@
 
 using namespace std;
 
+void usage(void) {
+    fprintf(stderr,
+"usage: COMMAND [PARAM]\n"
+"       type COMMANDS before any word you typed. If you want to type COMMANDS\n"
+"       as a word itself, just leave a blank before it. Default you chat with\n"
+"       the server, after punched, you chat directly with the peer you punched.\n\n"
+
+"COMMANDS:\n"
+"    help\n"
+"    list\n"
+"    whoami\n"
+"    punch [ip] [port]\n" 
+"    login\n"
+"    logout\n"
+"    exit\n"
+    
+"SYNOPSIS:\n"
+"    HELP:   print help info.\n"
+"    LIST:   print logined & punched info.\n"
+"    WHOAMI: show who you are, namely the ip address & port through NAT.\n"
+"    PUNCH:  establish connection between you and the peer you want to talk with.\n"
+"            After punched, you talked directly to punched peer.\n"
+"            punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
+"    LOGIN:  login you existence to the server, may type 'list' when logined.\n"
+"    LOGOUT: clear your login info on the server.\n" 
+"    EXIT:   exit this program on your machine, same as CTRL + D.\n"
+    );
+
+    return;
+}
+
 PKTTYPE checkCmd(char *cmd, PktInfo &packet) {
     PKTTYPE type = PKTTYPE::MESSAGE;
     /* distinguish 'login' and ' login', the former is command
@@ -33,6 +64,8 @@ PKTTYPE checkCmd(char *cmd, PktInfo &packet) {
         type = PKTTYPE::ACK;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::WHOAMI]) == 0) {
         type = PKTTYPE::WHOAMI;
+    } else if (strcasecmp(fWord, CMDS[PKTTYPE::HELP]) == 0) {
+        type = PKTTYPE::HELP;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::EXIT]) == 0) {
         type = PKTTYPE::EXIT;
         exit(0);
@@ -73,7 +106,6 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
     type = checkCmd(msg, packet);
     makePacket(msg, packet, type);
 
-#if 1
     /* 'read' from stdin, the 'carriage return' was read to string also,
      * which will cause strlen(string) plus one. This problem can be
      * tackled by several methods. Below method is safe, except from 
@@ -123,10 +155,14 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
             }
         case PKTTYPE::SYN: 
             break;
+        case PKTTYPE::HELP:
+            {
+                usage();
+                return;
+            }
         default:
             break;
     }
-#endif
 
     ssize_t sendSize = udpSendPkt(sockFd, peer, packet);
 

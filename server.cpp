@@ -217,7 +217,6 @@ void *handleTicks(void *arg) {
                 hashMap->erase(iter++);
                 /* check if punchMap still has this timeout info. */
 #if 1
-                cout << "Entering iterFind:" << endl;
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
                     cout << "Found peer: " << peer << endl;

@@ -16,6 +16,7 @@ const char *CMDS[] = {
     "ACK",
     "WHOAMI",
     "ERROR",
+    "HELP",
     "EXIT"
 };
 pthread_mutex_t pLock = PTHREAD_MUTEX_INITIALIZER;

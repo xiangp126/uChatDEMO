@@ -19,5 +19,6 @@ void promptInput();
 void handleInput(int sockFd, PeerInfo &peer, PktInfo &);
 void handleNet(int sockFd, PeerInfo &peer, PktInfo &pkt);
 int  setPunchInfo(char *cmd, PktInfo &packet);
+void usage(void);
 
 #endif
