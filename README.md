@@ -2,55 +2,19 @@
 
 ## Intro
 
-p2p_communication-demo is a demo tool for study or research on peer to peer 
-communication mechanism through NAT. which is a lightweight tool easy to 
-distribute.
+p2p_communication-demo is a demo tool for study or research on peer to peer communication mechanism through NAT. which is a lightweight tool very easy to distribute.
 
 It is part of the p2p_communication-libev, this version 'demo' was implemented
 using mid-man transfer, which was the easiest but most robust method.
 
-Further, I will try to implement steady version p2p_communication-libev, which 
-will update version of p2p_communication-demo.
+Further, I will try to implement steady version p2p_communication-libev, which was updated version of this p2p_communication-demo.
 
 Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Features
 
-p2p_communication-demo is written in C++ and was only tried on Linux-Like 
-platform. It's designed to be a lightweight implementation of chat mechanism
-through Internet, in order to keep the resource usage as low as possible.
-
-## Prerequisites
-
-You should distributed it on Linux-like enviroment, and C++ compile like g++
-must support C++11, C++0x is not enough.
-
-### Get the latest source code
-
-```bash
-git clone https://github.com/xiangp126/p2p_communication-demo
-cd p2p_communication-demo
-make
-
-on server:
-./p2pserver
-on client:
-./p2pclient [SERVER_IP] [SERVER_PORT]
-```
-
-### Build and install with recent libsodium
-
-You have to install libsodium 1.0.8 or later before building. See [Directly build and install on UNIX-like system](#linux).
-
-## Installation
-
-### Pre-build configure guide
-
-For a complete list of available configure-time option,
-try `configure --help`.
-
-### Debian & Ubuntu
-
+p2p_communication-demo is written in C++ and was only tested on Linux-Like platform. 
+It's designed to be a lightweight implementation of chat mechanism through Internet, in order to keep the resource usage as low as possible.
 
 ## Usage
 
@@ -58,8 +22,6 @@ For a detailed and complete list of all supported arguments,
 you may refer to the help pages of the applications, respectively.
 
 ```bash
-
-
 >>> help
 NAME
     p2pclient --- Client End of Peer to Peer communication Through NAT
@@ -94,30 +56,106 @@ AUTHORS
        p2pclient is a DEMO for either further study or research purpose, you
        can modify or redistribute it whatever you want.
 
+```
 
-notes:
+## EXAMPLE
 
-    ss-redir provides a transparent proxy function and only works on the
-    Linux platform with iptables.
+This example was both from the client and server point.
+On server side, the message reveived was pretty printed as default. 
+
+### Client Side
+
+```bash
+>>> login
+>>> list
+>>> Message From (10.124.10.102 13000):
+-------------------------- *** Login Info
+  10.124.10.102 57569   ===>>   TTL: 9
+*** ------------------------------
+
+-------------------------- *** Punch Info
+*** --------------------------------------
+
+>>> punch
+Usage Format: punch 127.0.0.1 18974
+Notice Not Leave any blank before 'punch'
+
+>>> punch 10.124.10.102 57569
+Want To Punch (10.124.10.102 57569)
+Sending PUNCH Packet To Server...
+>>> NOTICE: First, You Two Must All Be Logined.
+Just Type 'list' to See Info.
+>>>
+
+>>> whoami
+>>> You Are: (10.124.10.102 46302)
+
+>>> list
+>>> Message From (10.124.10.102 13000):
+-------------------------- *** Login Info
+  10.124.10.102 46302   ===>>   TTL: 10
+  10.124.10.102 57569   ===>>   TTL: 10
+*** ------------------------------
+
+-------------------------- *** Punch Info
+*** --------------------------------------
+
+>>> punch 10.124.10.102 57569
+Want To Punch (10.124.10.102 57569)
+Sending PUNCH Packet To Server...
+>>> list
+>>> Message From (10.124.10.102 13000):
+-------------------------- *** Login Info
+  10.124.10.102 46302   ===>>   TTL: 10
+  10.124.10.102 57569   ===>>   TTL: 10
+*** ------------------------------
+
+-------------------------- *** Punch Info
+  10.124.10.102 57569   ===>>   10.124.10.102 46302
+  10.124.10.102 46302   ===>>   10.124.10.102 57569
+*** --------------------------------------
+
+On the Peer Side:
+>>> Peer (10.124.10.102 46302) Want To Chat With You.
+By Default, Auto Send Accept.
+
+>>> can you speak English?
+>>> I am LiLei.
+>>>
+
+>>> Message From (10.124.10.102 57569): My name is HanMeiMei.
+>>>
 
 ```
 
-## Advanced usage
+### Client Side
+```bash
 
-The latest shadowsocks-libev has provided a *redir* mode. You can configure your Linux-based box or router to proxy all TCP traffic transparently.
+```
 
-    # Create new chain
-    root@Wrt:~# iptables -t nat -N SHADOWSOCKS
+## Installation
 
-## Setup P2P_Communication-Demo
+### Prerequisites
 
-It's quite easy to use this demo, it did not waste you much time to distribute.
+You should distribute it on Linux-like enviroment, and C++ compile such as g++
+must support C++11.
+Only C++0x support may not be enough.
+
+### Get the latest source code
+
+```bash
+git clone https://github.com/xiangp126/p2p_communication-demo
+cd p2p_communication-demo
+make
+```
 
 ### Setup your server
 
 ```bash
 on server:
-./p2pserver
+./p2pserver [LISTEN_PORT]
+# default LISTEN_PORT is 13000
+Now listening on port 13000...
 ```
 
 ### Setup your client
@@ -125,5 +163,9 @@ on server:
 ```bash
 on client:
 ./p2pclient [SERVER_IP] [SERVER_PORT]
+>>> 
+# type 'help' 
+>>> help
+
 ```
 
