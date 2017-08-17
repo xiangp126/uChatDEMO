@@ -15,6 +15,7 @@ You May Need These Basic Requirement to Read This Source:
 * Linux Lock & Attr Usage, Reentrant Lock
 * Thread Programming, Thread 'Suspend' from Outer
 * Socket Programming, Basic Network Programming Knowledge
+* Basic C++ STL Knowledge, Such As unordered_map
 
 Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
 
@@ -74,6 +75,7 @@ AUTHORS
 ## EXAMPLE
 
 This example was both from the client and server point.
+
 On server side, the message reveived was pretty printed as default. 
 
 ### Client Side
