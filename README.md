@@ -12,6 +12,7 @@ It is part of the p2p_communication-libev, which was updated Version of this Dem
 You May Need These Basic Requirement to Read This Source:
 
 * Basic Linux Knowledge and Platform Usage Experience
+* Basic Network Layer and Packet Structure Concept
 * Linux Lock & Attr Usage, Reentrant Lock
 * Thread Programming, Thread 'Suspend' from Outer
 * Socket Programming, Basic Network Programming Knowledge
