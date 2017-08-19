@@ -21,18 +21,22 @@ void usage(void) {
 "    punch [ip] [port]\n" 
 "    login\n"
 "    logout\n"
+"    setname [hostname]\n"
 "    exit\n\n"
     
 "DESCRIPTION\n"
-"    HELP:   print this help info, you can type 'help' when needed.\n"
-"    LIST:   print logined and punched info. It's useful before 'punch'.\n"
-"    WHOAMI: show who you are, namely the ip address & port through NAT.\n"
-"    PUNCH:  establish connection between you and the peer you want to talk with.\n"
-"            After punched, you talked directly to punched peer.\n"
-"            punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
-"    LOGIN:  login you existence to the server, may type 'list' when logined.\n"
-"    LOGOUT: clear your login info on the server.\n" 
-"    EXIT:   exit this program on your machine, same as CTRL + D.\n\n"
+"    HELP:    print this help info, you can type 'help' when needed.\n"
+"    LIST:    print logined and punched info. It's useful before 'punch'.\n"
+"    WHOAMI:  show who you are, namely the ip address & port through NAT.\n"
+"    PUNCH:   establish connection between you and the peer you want to talk with.\n"
+"             After punched, you talked directly to punched peer.\n"
+"             punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
+"    LOGIN:   login you existence to the server, may type 'list' when logined.\n"
+"    LOGOUT:  clear your login info on the server.\n" 
+"    SETNAME: set hostname to make peer more identified. When logined, setname will\n"
+"             take effect at once. The hostname will be back to Annoymous after\n"
+"             logout. Format: setname [hostname], suck as: setname corsair\n"
+"    EXIT:    exit this program on your machine, same as CTRL + D.\n\n"
 
 "AUTHORS\n"
 "       p2pclient is a DEMO for either further study or research purpose, you\n"
@@ -74,6 +78,8 @@ PKTTYPE checkCmd(char *cmd, PktInfo &packet) {
         type = PKTTYPE::WHOAMI;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::HELP]) == 0) {
         type = PKTTYPE::HELP;
+    } else if (strcasecmp(fWord, CMDS[PKTTYPE::SETNAME]) == 0) {
+        type = PKTTYPE::SETNAME;
     } else if (strcasecmp(fWord, CMDS[PKTTYPE::EXIT]) == 0) {
         type = PKTTYPE::EXIT;
         exit(0);
@@ -167,6 +173,12 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
             {
                 usage();
                 return;
+            }
+        case PKTTYPE::SETNAME:
+            {
+                /* change packet type to SETNAME. */
+                packet.getHead().type = PKTTYPE::SETNAME;
+                break;
             }
         default:
             break;

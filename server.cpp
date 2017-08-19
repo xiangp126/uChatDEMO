@@ -31,7 +31,7 @@ ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &hashMap) {
 /* unordered_map remove duplicate items */
 void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer) {
     pthread_mutex_lock(&ticksLock);
-    clientMap[peer] = TICKS_INI;
+    clientMap[peer].tick = TICKS_INI;
     pthread_mutex_unlock(&ticksLock);
 
     return;
@@ -62,15 +62,19 @@ void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
 void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
                                            char *msg) {
     ostringstream oss;
-    oss << "\n-------------------------- *** Login Info\n";
+    oss << "\n-------------------------- *** Login Info\n"
+        << "    PEER-INFO    " << "    TTL  " << "       HOSTNAME\n";
 
     pthread_mutex_lock(&ticksLock);
     auto iter1 = clientMap.begin();
     for (; iter1 != clientMap.end(); ++iter1) {
+
         oss << "  " << iter1->first.ip << " " << iter1->first.port 
-            << "  " << " ===>> " << "  TTL: " << iter1->second << "\n";
+            << "     " << iter1->second.tick 
+            << "          " << iter1->second.hostname
+            << "\n";
     }
-    oss << "*** ------------------------------" << endl;
+    oss << "*** --------------------------------------" << "\n";
 
     oss << "\n-------------------------- *** Punch Info\n";
     auto iter2 = punchMap.begin();
@@ -78,7 +82,7 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
         oss << "  " << iter2->first.ip << " " << iter2->first.port 
             << "  " << " ===>> " 
             << "  " << iter2->second.ip << " " << iter2->second.port
-            << endl;
+            << "\n";
     }
     pthread_mutex_unlock(&ticksLock);
     oss << "*** --------------------------------------" << endl;
@@ -86,6 +90,47 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
     memset(msg, 0, IBUFSIZ);
     strcpy(msg, oss.str().c_str());
     return;
+}
+
+void *handleTicks(void *arg) {
+    PEERTICKTYPE *hashMap = (PEERTICKTYPE *)arg;
+    while (1) {
+        pthread_mutex_lock(&ticksLock);
+        /* Erasing an element of a map invalidates iterators pointing
+         * to that element (after all that element has been deleted).
+         * You shouldn't reuse that iterator, instead, advance the 
+         * iterator to the next element before the deletion takes place.
+         */
+        auto iter = hashMap->begin();
+#if 0
+        cout << "########## Enter --iter->second" << endl;
+#endif
+        while (iter != hashMap->end()) {
+            --(iter->second).tick;
+            if ((iter->second).tick < 0) {
+                PeerInfo peer = iter->first;
+                hashMap->erase(iter++);
+#if 1
+                /* check if punchMap still has this timeout info. */
+                cout << "############################### Delete It" << endl;
+                auto iterFind = punchMap.find(peer);
+                if (iterFind != punchMap.end()) {
+                    cout << "Found Timeout Peer: " << peer << endl;
+                    cout << "#######################################" << endl;
+                    punchMap.erase(iterFind);
+                }
+#endif
+            } else {
+                ++iter;
+            }
+        }
+
+        pthread_mutex_unlock(&ticksLock);
+
+        /* sleep 1 s before next lock action. sleep some time is must.*/
+        sleep(1);
+    }
+    return NULL;
 }
 
 void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
@@ -117,7 +162,7 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
             {
                 pthread_mutex_lock(&ticksLock);
 
-                clientMap[peer] = TICKS_INI;
+                clientMap[peer].tick = TICKS_INI;
         /* fix bug: under some uncertein circumstance handleTicks() 
          * will stop minus ticks, so use upper code replacing below,
          * seems work good.
@@ -125,7 +170,7 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
 #if 0
                 auto iterFind = clientMap.find(peer);
                 if (iterFind != clientMap.end()) {
-                    iterFind->second = TICKS_INI;
+                    (iterFind->second).tick = TICKS_INI;
                 } else {
                     /* reentrant lock. */
                     addClient(clientMap, peer);
@@ -211,6 +256,12 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 udpSendPkt(sockFd, peer, packet);
                 break;
             }
+        case PKTTYPE::SETNAME: 
+            {
+                /* get hostname sent by client and set it to TickInfo. */
+                getSetHostName(clientMap, peer, packet.getPayload());
+                break;
+            }
         default:
             break;
     }
@@ -220,44 +271,35 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
        return;
 }
 
-void *handleTicks(void *arg) {
-    PEERTICKTYPE *hashMap = (PEERTICKTYPE *)arg;
-    while (1) {
-        pthread_mutex_lock(&ticksLock);
-        /* Erasing an element of a map invalidates iterators pointing
-         * to that element (after all that element has been deleted).
-         * You shouldn't reuse that iterator, instead, advance the 
-         * iterator to the next element before the deletion takes place.
-         */
-        auto iter = hashMap->begin();
-#if 0
-        cout << "########## Enter --iter->second" << endl;
-#endif
-        while (iter != hashMap->end()) {
-            --iter->second;
-            if (iter->second < 0) {
-                PeerInfo peer = iter->first;
-                hashMap->erase(iter++);
-#if 1
-                /* check if punchMap still has this timeout info. */
-                cout << "############################### Delete It" << endl;
-                auto iterFind = punchMap.find(peer);
-                if (iterFind != punchMap.end()) {
-                    cout << "Found Timeout Peer: " << peer << endl;
-                    cout << "#######################################" << endl;
-                    punchMap.erase(iterFind);
-                }
-#endif
-            } else {
-                ++iter;
-            }
-        }
-
-        pthread_mutex_unlock(&ticksLock);
-
-        /* sleep 1 s before next lock action. sleep some time is must.*/
-        sleep(1);
+void getSetHostName(PEERTICKTYPE &clientMap, PeerInfo &peer, char *payload) {
+    char fWord[MAXHOSTLEN];
+    cout << "####### payload ****" << payload << endl;
+    int cnt = 0;
+    char *pTmp = payload;
+    char *pSet = fWord;
+    /* skip first command word till encountere a blank space. */
+    while ((*pTmp != ' ') && (cnt < MAXHOSTLEN - 1)) {
+        ++pTmp;
+        ++cnt;
     }
-    return NULL;
+
+    /* while (*pTmp++ == ' '); 
+     * will omit the first character of hostname. BUG
+     * */
+    while (*pTmp == ' ') {
+        ++pTmp;
+    }
+
+    cnt = 0;
+    while ((*pTmp != '\0') && (cnt < MAXHOSTLEN - 1)) {
+        *pSet = *pTmp;
+        ++pSet;
+        ++pTmp;
+        ++cnt;
+    }
+    fWord[cnt] = '\0';
+    strncpy(clientMap[peer].hostname, fWord, MAXHOSTLEN - 1);
+
+    return;
 }
 

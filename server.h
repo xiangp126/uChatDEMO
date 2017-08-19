@@ -10,9 +10,25 @@ using std::ostringstream;
 using std::cout;
 using std::endl;
 
-#define LOGNAME "./p2p_server.log"
-#define TICKS_INI   10  // count down from TICKS to 0, then timeout.
-/* declare external variables */
+#define LOGNAME     "./p2p_server.log"
+#define TICKS_INI   9    // count down from TICKS to 0, then timeout.
+#define MAXHOSTLEN  15
+/* typedef variables and structure. */
+class TickInfo {
+public:
+    int  tick;
+    char hostname[MAXHOSTLEN];
+public:
+    TickInfo(int _tick = 0, char *_hostname = "Annoymous") {
+        tick = _tick;
+        strncpy(hostname, _hostname, MAXHOSTLEN - 1);
+        hostname[MAXHOSTLEN - 1] = '\0';
+    }
+};
+typedef unordered_map<PeerInfo, TickInfo, HashFunc> PEERTICKTYPE;
+typedef unordered_map<PeerInfo, PeerInfo, HashFunc> PEERPUNCHEDTYPE;
+
+/* declare external variables. */
 extern char message[IBUFSIZ];
 extern PEERPUNCHEDTYPE punchMap;
 extern pthread_mutex_t     ticksLock;
@@ -29,5 +45,6 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
               PktInfo &packet, PeerInfo &peer);
 void *handleTicks(void *arg);
 void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr);
+void getSetHostName(PEERTICKTYPE &hashMap, PeerInfo &peer, char *payload);
 
 #endif
