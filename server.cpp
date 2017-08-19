@@ -136,6 +136,18 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
         case PKTTYPE::LOGOUT: 
             {
                 delClient(clientMap, peer);
+#if 1
+                /* check if punchMap still has this timeout info. */
+                pthread_mutex_lock(&ticksLock);
+                cout << "############################### Delete It" << endl;
+                auto iterFind = punchMap.find(peer);
+                if (iterFind != punchMap.end()) {
+                    cout << "Found To Delete Peer: " << peer << endl;
+                    cout << "#######################################" << endl;
+                    punchMap.erase(iterFind);
+                }
+                pthread_mutex_unlock(&ticksLock);
+#endif
                 cout << peer << " logout." << endl;
                 break;
             }
@@ -221,7 +233,7 @@ void *handleTicks(void *arg) {
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
                     cout << "Found Timeout Peer: " << peer << endl;
-                    cout << "###############################" << endl;
+                    cout << "#######################################" << endl;
                     punchMap.erase(iterFind);
                 }
 #endif
