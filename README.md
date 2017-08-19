@@ -145,18 +145,20 @@ Sending PUNCH Packet To Server...
   127.0.0.1 45490   ===>>   127.0.0.1 40069
 *** --------------------------------------
 
-On the Peer Side:
->>> Peer (127.0.0.1 45490) Want To Chat With You.
-By Default, Auto Send Accept.
-
 On My Side:
 >>> can you speak English?
 >>> I am LiLei.
+>>> Message From (127.0.0.1 40069): My name is HanMeiMei.
 >>>
 
-On the Peer Side:
->>> Message From (127.0.0.1 45490): My name is HanMeiMei.
->>>
+Meanwhile On the Peer Side:
+>>> Peer (127.0.0.1 45490) Want To Chat With You.
+By Default, Auto Send Accept.
+
+>>> Message From (127.0.0.1 45490): can you speak English?
+>>> Message From (127.0.0.1 45490): I am LiLei.
+>>> My name is HanMeiMei.
+>>> 
 
 ```
 
