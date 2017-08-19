@@ -94,11 +94,11 @@ On server side, the message reveived was pretty printed as default.
 ```bash
 >>> login
 >>> list
->>> Message From (10.124.10.102 13000):
+>>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
     PEER-INFO        TTL         HOSTNAME
-  10.124.10.102 40069     9          arthur
-  10.124.10.102 45490     7          Annoymous
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     7          Annoymous
 *** --------------------------------------
 
 -------------------------- *** Punch Info
@@ -106,47 +106,47 @@ On server side, the message reveived was pretty printed as default.
 
 >>> setname corsair
 >>> list
->>> Message From (10.124.10.102 13000):
+>>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
     PEER-INFO        TTL         HOSTNAME
-  10.124.10.102 40069     8          arthur
-  10.124.10.102 45490     8          corsair
+  127.0.0.1 40069     8          arthur
+  127.0.0.1 45490     8          corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
 *** --------------------------------------
 
 >>> punch
-Usage Format: punch 10.124.10.102 18974
+Usage Format: punch 127.0.0.1 18974
 Notice Not Leave any blank before 'punch'
 
->>> punch 10.124.10.102 40069
-Want To Punch (10.124.10.102 40069)
+>>> punch 127.0.0.1 40069
+Want To Punch (127.0.0.1 40069)
 Sending PUNCH Packet To Server...
 >>> NOTICE: First, You Two Must All Be Logined.
 Just Type 'list' to See Info.
 
 >>> whoami
->>> You Are: (10.124.10.102 45490)
->>> punch 10.124.10.102 40069
-Want To Punch (10.124.10.102 40069)
+>>> You Are: (127.0.0.1 45490)
+>>> punch 127.0.0.1 40069
+Want To Punch (127.0.0.1 40069)
 Sending PUNCH Packet To Server...
 
 >>> list
->>> Message From (10.124.10.102 13000):
+>>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
     PEER-INFO        TTL         HOSTNAME
-  10.124.10.102 40069     9          arthur
-  10.124.10.102 45490     9          corsair
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     9          corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  10.124.10.102 40069   ===>>   10.124.10.102 45490
-  10.124.10.102 45490   ===>>   10.124.10.102 40069
+  127.0.0.1 40069   ===>>   127.0.0.1 45490
+  127.0.0.1 45490   ===>>   127.0.0.1 40069
 *** --------------------------------------
 
 On the Peer Side:
->>> Peer (10.124.10.102 45490) Want To Chat With You.
+>>> Peer (127.0.0.1 45490) Want To Chat With You.
 By Default, Auto Send Accept.
 
 On My Side:
@@ -155,7 +155,7 @@ On My Side:
 >>>
 
 On the Peer Side:
->>> Message From (10.124.10.102 45490): My name is HanMeiMei.
+>>> Message From (127.0.0.1 45490): My name is HanMeiMei.
 >>>
 
 ```
@@ -170,16 +170,16 @@ Head PeerInfo = (0.0.0.0 0)
 Packet Payload:
 -------------------------- *** Login Info
     PEER-INFO        TTL         HOSTNAME
-  10.124.10.102 40069     9          arthur
-  10.124.10.102 45490     9          corsair
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     9          corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  10.124.10.102 40069   ===>>   10.124.10.102 45490
-  10.124.10.102 45490   ===>>   10.124.10.102 40069
+  127.0.0.1 40069   ===>>   127.0.0.1 45490
+  127.0.0.1 45490   ===>>   127.0.0.1 40069
 *** --------------------------------------
 
-Heart Beat Received From (10.124.10.102 40069)
+Heart Beat Received From (127.0.0.1 40069)
 Head Type = HEARTBEAT
 Payload length = 11 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
