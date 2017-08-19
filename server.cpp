@@ -116,6 +116,13 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
         case PKTTYPE::HEARTBEAT: 
             {
                 pthread_mutex_lock(&ticksLock);
+
+                clientMap[peer] = TICKS_INI;
+        /* fix bug: under some uncertein circumstance handleTicks() 
+         * will stop minus ticks, so use upper code replacing below,
+         * seems work good.
+         */
+#if 0
                 auto iterFind = clientMap.find(peer);
                 if (iterFind != clientMap.end()) {
                     iterFind->second = TICKS_INI;
@@ -123,6 +130,7 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                     /* reentrant lock. */
                     addClient(clientMap, peer);
                 }
+#endif
                 pthread_mutex_unlock(&ticksLock);
                 cout << "Heart Beat Received From " << peer << endl;
                 break;
@@ -222,6 +230,9 @@ void *handleTicks(void *arg) {
          * iterator to the next element before the deletion takes place.
          */
         auto iter = hashMap->begin();
+#if 0
+        cout << "########## Enter --iter->second" << endl;
+#endif
         while (iter != hashMap->end()) {
             --iter->second;
             if (iter->second < 0) {
