@@ -58,6 +58,7 @@ namespace myspace {
         WHOAMI,
         ERROR,
         HELP,
+        SETNAME,
         EXIT,
         MAXPKTTYPE
     };
@@ -134,8 +135,6 @@ public:
     /* overload call operator */
     size_t operator()(const PeerInfo &peer) const;
 };
-typedef unordered_map<PeerInfo, int, HashFunc> PEERTICKTYPE;
-typedef unordered_map<PeerInfo, PeerInfo, HashFunc> PEERPUNCHEDTYPE;
 /* only useful for transferring into heat beat thread func */
 struct HeartParm {
     int sockFd;

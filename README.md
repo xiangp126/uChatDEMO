@@ -9,7 +9,7 @@ easy but robust method.
 
 It is part of the p2p_communication-libev, which was updated Version of this Demo.
 
-You May Need These Basic Requirement to Read This Source:
+You May Acquire Following Basic Knowledge Once Read The Source:
 
 * Basic Linux Knowledge and Platform(CentOS/ArchLinux) Usage Experience
 * Basic Linux System Programming Skills, Such As:
@@ -20,18 +20,21 @@ You May Need These Basic Requirement to Read This Source:
 * Socket Programming, Basic Network Coding Knowledge
 * Basic C++ STL Knowledge, Such As unordered_map
 
-Current version: 1.0.0 | [G++](http://www.cprogramming.com/g++.html)
+Current version: 1.1.0 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Features
 
 This Demo was Implemented In C++, In general, has following features:
-
+- V1.0.0
 * Whoami Client Query Support
 * RealTime Login & Punched Info Output
 * KeepAlive Mechanism from Client to Server
 * Dynamic Connection Establishment
 * Directly peer to peer chat, without any redundant command word.
 * Pretty Print on Server Side Message
+- V1.1.0
+* Fix Bug: Let Logout Delete Punched Info 
+* Add SET hostname Support, Make Peer More Identified
 
 ## Usage
 
@@ -39,6 +42,7 @@ For a detailed and complete list of all supported arguments,
 you may refer to the help pages of the applications, respectively.
 
 ```bash
+
 >>> help
 NAME
     p2pclient --- Client End of Peer to Peer communication Through NAT
@@ -56,18 +60,22 @@ SYNOPSIS:
     punch [ip] [port]
     login
     logout
+    setname [hostname]
     exit
 
 DESCRIPTION
-    HELP:   print this help info, you can type 'help' when needed.
-    LIST:   print logined and punched info. It's useful before 'punch'.
-    WHOAMI: show who you are, namely the ip address & port through NAT.
-    PUNCH:  establish connection between you and the peer you want to talk with.
-            After punched, you talked directly to punched peer.
-            punch [ip] [port], such as: punch [64.0.1.5] [12400]
-    LOGIN:  login you existence to the server, may type 'list' when logined.
-    LOGOUT: clear your login info on the server.
-    EXIT:   exit this program on your machine, same as CTRL + D.
+    HELP:    print this help info, you can type 'help' when needed.
+    LIST:    print logined and punched info. It's useful before 'punch'.
+    WHOAMI:  show who you are, namely the ip address & port through NAT.
+    PUNCH:   establish connection between you and the peer you want to talk with.
+             After punched, you talked directly to punched peer.
+             punch [ip] [port], such as: punch [64.0.1.5] [12400]
+    LOGIN:   login you existence to the server, may type 'list' when logined.
+    LOGOUT:  clear your login info on the server.
+    SETNAME: set hostname to make peer more identified. When logined, setname will
+             take effect at once. The hostname will be back to Annoymous after
+             logout. Format: setname [hostname], suck as: setname corsair
+    EXIT:    exit this program on your machine, same as CTRL + D.
 
 AUTHORS
        p2pclient is a DEMO for either further study or research purpose, you
@@ -88,10 +96,24 @@ On server side, the message reveived was pretty printed as default.
 ......
 >>> login
 >>> list
->>> Message From (10.124.10.102 13000):
+>>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
-  10.124.10.102 57569   ===>>   TTL: 9
-*** ------------------------------
+    PEER-INFO        TTL         HOSTNAME
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     7          Annoymous
+*** --------------------------------------
+
+-------------------------- *** Punch Info
+*** --------------------------------------
+
+>>> setname corsair
+>>> list
+>>> Message From (127.0.0.1 13000):
+-------------------------- *** Login Info
+    PEER-INFO        TTL         HOSTNAME
+  127.0.0.1 40069     8          arthur
+  127.0.0.1 45490     8          corsair
+*** --------------------------------------
 
 -------------------------- *** Punch Info
 *** --------------------------------------
@@ -100,51 +122,45 @@ On server side, the message reveived was pretty printed as default.
 Usage Format: punch 127.0.0.1 18974
 Notice Not Leave any blank before 'punch'
 
->>> punch 10.124.10.102 57569
-Want To Punch (10.124.10.102 57569)
+>>> punch 127.0.0.1 40069
+Want To Punch (127.0.0.1 40069)
 Sending PUNCH Packet To Server...
 >>> NOTICE: First, You Two Must All Be Logined.
 Just Type 'list' to See Info.
->>>
 
 >>> whoami
->>> You Are: (10.124.10.102 46302)
-
->>> list
->>> Message From (10.124.10.102 13000):
--------------------------- *** Login Info
-  10.124.10.102 46302   ===>>   TTL: 10
-  10.124.10.102 57569   ===>>   TTL: 10
-*** ------------------------------
-
--------------------------- *** Punch Info
-*** --------------------------------------
-
->>> punch 10.124.10.102 57569
-Want To Punch (10.124.10.102 57569)
+>>> You Are: (127.0.0.1 45490)
+>>> punch 127.0.0.1 40069
+Want To Punch (127.0.0.1 40069)
 Sending PUNCH Packet To Server...
->>> list
->>> Message From (10.124.10.102 13000):
--------------------------- *** Login Info
-  10.124.10.102 46302   ===>>   TTL: 10
-  10.124.10.102 57569   ===>>   TTL: 10
-*** ------------------------------
 
--------------------------- *** Punch Info
-  10.124.10.102 57569   ===>>   10.124.10.102 46302
-  10.124.10.102 46302   ===>>   10.124.10.102 57569
+>>> list
+>>> Message From (127.0.0.1 13000):
+-------------------------- *** Login Info
+    PEER-INFO        TTL         HOSTNAME
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     9          corsair
 *** --------------------------------------
 
-On the Peer Side:
->>> Peer (10.124.10.102 46302) Want To Chat With You.
-By Default, Auto Send Accept.
+-------------------------- *** Punch Info
+  127.0.0.1 40069   ===>>   127.0.0.1 45490
+  127.0.0.1 45490   ===>>   127.0.0.1 40069
+*** --------------------------------------
 
+On My Side:
 >>> can you speak English?
 >>> I am LiLei.
+>>> Message From (127.0.0.1 40069): My name is HanMeiMei.
 >>>
 
->>> Message From (10.124.10.102 57569): My name is HanMeiMei.
->>>
+Meanwhile On the Peer Side:
+>>> Peer (127.0.0.1 45490) Want To Chat With You.
+By Default, Auto Send Accept.
+
+>>> Message From (127.0.0.1 45490): can you speak English?
+>>> Message From (127.0.0.1 45490): I am LiLei.
+>>> My name is HanMeiMei.
+>>> 
 
 ```
 
@@ -153,20 +169,21 @@ By Default, Auto Send Accept.
 ```bash
 
 Head Type = MESSAGE
-Payload length = 347 (Had + '\0')
+Payload length = 384 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
 Packet Payload:
 -------------------------- *** Login Info
-  10.124.10.102 38397   ===>>   TTL: 9
-  10.124.10.102 33878   ===>>   TTL: 8
-*** ------------------------------
-
--------------------------- *** Punch Info
-  10.124.10.102 38397   ===>>   10.124.10.102 33878
-  10.124.10.102 33878   ===>>   10.124.10.102 38397
+    PEER-INFO        TTL         HOSTNAME
+  127.0.0.1 40069     9          arthur
+  127.0.0.1 45490     9          corsair
 *** --------------------------------------
 
-Heart Beat Received From (10.124.10.102 33878)
+-------------------------- *** Punch Info
+  127.0.0.1 40069   ===>>   127.0.0.1 45490
+  127.0.0.1 45490   ===>>   127.0.0.1 40069
+*** --------------------------------------
+
+Heart Beat Received From (127.0.0.1 40069)
 Head Type = HEARTBEAT
 Payload length = 11 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
