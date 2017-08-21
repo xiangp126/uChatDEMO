@@ -84,6 +84,8 @@ On server side, the message reveived was pretty printed as default.
 ### Client Side
 
 ```bash
+>>> help
+......
 >>> login
 >>> list
 >>> Message From (10.124.10.102 13000):
