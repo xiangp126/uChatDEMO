@@ -25,14 +25,15 @@ Current version: 1.1.0 | [G++](http://www.cprogramming.com/g++.html)
 ## Features
 
 This Demo was Implemented In C++, In general, has following features:
-- V1.0.0
+
+### V1.0.0
 * Whoami Client Query Support
 * RealTime Login & Punched Info Output
 * KeepAlive Mechanism from Client to Server
 * Dynamic Connection Establishment
 * Directly peer to peer chat, without any redundant command word.
 * Pretty Print on Server Side Message
-- V1.1.0
+### V1.1.0
 * Fix Bug: Let Logout Delete Punched Info 
 * Add SET hostname Support, Make Peer More Identified
 
