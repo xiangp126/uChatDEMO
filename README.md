@@ -232,7 +232,10 @@ make
 
 ```bash
 on server:
-./p2pserver [LISTEN_PORT]
+step 1:
+In config.h change PORTNUM to the port you want it to listen to.
+step 2:
+./p2pserver 
 # default LISTEN_PORT is 13000
 Now listening on port 13000...
 ```
