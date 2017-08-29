@@ -151,8 +151,8 @@ Sending PUNCH Packet To Server...
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 58404    9    giggle
-  127.0.0.1 35079        9    arthur
+  64.104.169.98 58404    9     giggle
+  127.0.0.1 35079        9     arthur
   127.0.0.1 47061        10    corsair
 *** --------------------------------------
 
