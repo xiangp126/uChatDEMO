@@ -76,6 +76,7 @@ DESCRIPTION
     SETNAME: set hostname to make peer more identified. When logined, setname will
              take effect at once. The hostname will be back to Annoymous after
              logout. Format: setname [hostname], suck as: setname corsair
+             That is: setname only take effect when logined.
     EXIT:    exit this program on your machine, same as CTRL + D.
 
 AUTHORS
@@ -100,8 +101,8 @@ On server side, the message reveived was pretty printed as default.
 >>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  127.0.0.1 37807        8     corsair
-  127.0.0.1 58285        8     arthur
+  127.0.0.1 35079        10    arthur
+  127.0.0.1 47061        9     corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
@@ -111,9 +112,9 @@ On server side, the message reveived was pretty printed as default.
 Usage Format: punch 127.0.0.1 18974
 Notice Not Leave any blank before 'punch'.
 >>> whoami
->>> You Are: (64.104.169.98 51434)
->>> punch 127.0.0.1 58285
-Want To Punch (127.0.0.1 58285)
+>>> You Are: (64.104.169.98 58404)
+>>> punch 127.0.0.1 35079
+Want To Punch (127.0.0.1 35079)
 Sending PUNCH Packet To Server...
 >>> NOTICE: First, You Two Must All Be Logined.
 Just Type 'list' to See Info.
@@ -123,9 +124,9 @@ Just Type 'list' to See Info.
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 51434    10    Annoymous
-  127.0.0.1 37807        10    corsair
-  127.0.0.1 58285        10    arthur
+  64.104.169.98 58404    10    Annoymous
+  127.0.0.1 35079        9     arthur
+  127.0.0.1 47061        9     corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
@@ -136,44 +137,43 @@ Just Type 'list' to See Info.
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 51434    10    giggle
-  127.0.0.1 37807        10    corsair
-  127.0.0.1 58285        10    arthur
+  64.104.169.98 58404    10    giggle
+  127.0.0.1 35079        10    arthur
+  127.0.0.1 47061        10    corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
 *** --------------------------------------
 
->>> punch 127.0.0.1 58285
-Want To Punch (127.0.0.1 58285)
+>>> punch 127.0.0.1 35079
+Want To Punch (127.0.0.1 35079)
 Sending PUNCH Packet To Server...
-
 >>> list
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 51434    10    giggle
-  127.0.0.1 37807        10    corsair
-  127.0.0.1 58285        10    arthur
+  64.104.169.98 58404    9    giggle
+  127.0.0.1 35079        9    arthur
+  127.0.0.1 47061        10    corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  127.0.0.1 58285   ===>>   64.104.169.98 51434
-  64.104.169.98 51434   ===>>   127.0.0.1 58285
+  127.0.0.1 35079   ===>>   64.104.169.98 58404
+  64.104.169.98 58404   ===>>   127.0.0.1 35079
 *** --------------------------------------
 
 On My Side:
 >>> can you speak English?
 >>> I am LiLei.
->>> Message From (127.0.0.1 58285): My name is HanMeiMei.
+>>> Message From (127.0.0.1 35079): My name is HanMeiMei.
 >>>
 
 Meanwhile On the Peer Side:
->>> Peer (64.104.169.98 51434) Want To Chat With You.
+>>> Peer (64.104.169.98 58404) Want To Chat With You.
 By Default, Auto Send Accept.
 
->>> Message From (64.104.169.98 51434): can you speak English?
->>> Message From (64.104.169.98 51434): I am LiLei.
+>>> Message From (64.104.169.98 58404): can you speak English?
+>>> Message From (64.104.169.98 58404): I am LiLei.
 >>> My name is HanMeiMei.
 >>> 
 
@@ -184,21 +184,27 @@ By Default, Auto Send Accept.
 ```bash
 
 Head Type = MESSAGE
-Payload length = 384 (Had + '\0')
+Payload length = 424 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
 Packet Payload:
 -------------------------- *** Login Info
-    PEER-INFO        TTL         HOSTNAME
-  127.0.0.1 40069     9          arthur
-  127.0.0.1 45490     9          corsair
+  PEERINFO-IP-PORT       TTL   HOSTNAME
+  64.104.169.98 58404    10    giggle
+  127.0.0.1 35079        8    arthur
+  127.0.0.1 47061        9    corsair
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  127.0.0.1 40069   ===>>   127.0.0.1 45490
-  127.0.0.1 45490   ===>>   127.0.0.1 40069
+  127.0.0.1 35079   ===>>   64.104.169.98 58404
+  64.104.169.98 58404   ===>>   127.0.0.1 35079
 *** --------------------------------------
 
-Heart Beat Received From (127.0.0.1 40069)
+Head Type = SETNAME
+Payload length = 15 (Had + '\0')
+Head PeerInfo = (0.0.0.0 0)
+Packet Payload: setname giggle
+
+Heart Beat Received From (64.104.169.98 58404)
 Head Type = HEARTBEAT
 Payload length = 11 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
