@@ -75,7 +75,7 @@ DESCRIPTION
     SETNAME: set hostname to make peer more identified. When logined, setname will
              take effect at once. The hostname will be back to Annoymous after
              logout. Format: setname [hostname], suck as: setname corsair
-             That is: setname only take effect when logined.
+             That is: setname only take effect after logined.
     EXIT:    exit this program on your machine, same as CTRL + D.
 
 AUTHORS
