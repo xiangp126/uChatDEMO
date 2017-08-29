@@ -94,72 +94,86 @@ On server side, the message reveived was pretty printed as default.
 
 ```bash
 >>> help
+# too long not to paste here, lookup 'Usage' page.
 ......
->>> login
 >>> list
 >>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
-    PEER-INFO        TTL         HOSTNAME
-  127.0.0.1 40069     9          arthur
-  127.0.0.1 45490     7          Annoymous
+  PEERINFO-IP-PORT       TTL   HOSTNAME
+  127.0.0.1 37807        8     corsair
+  127.0.0.1 58285        8     arthur
 *** --------------------------------------
 
 -------------------------- *** Punch Info
 *** --------------------------------------
 
->>> setname corsair
->>> list
->>> Message From (127.0.0.1 13000):
--------------------------- *** Login Info
-    PEER-INFO        TTL         HOSTNAME
-  127.0.0.1 40069     8          arthur
-  127.0.0.1 45490     8          corsair
-*** --------------------------------------
-
--------------------------- *** Punch Info
-*** --------------------------------------
-
->>> punch
+>>> punch arthur
 Usage Format: punch 127.0.0.1 18974
-Notice Not Leave any blank before 'punch'
-
->>> punch 127.0.0.1 40069
-Want To Punch (127.0.0.1 40069)
+Notice Not Leave any blank before 'punch'.
+>>> whoami
+>>> You Are: (64.104.169.98 51434)
+>>> punch 127.0.0.1 58285
+Want To Punch (127.0.0.1 58285)
 Sending PUNCH Packet To Server...
 >>> NOTICE: First, You Two Must All Be Logined.
 Just Type 'list' to See Info.
 
->>> whoami
->>> You Are: (127.0.0.1 45490)
->>> punch 127.0.0.1 40069
-Want To Punch (127.0.0.1 40069)
-Sending PUNCH Packet To Server...
-
+>>> login
 >>> list
->>> Message From (127.0.0.1 13000):
+>>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
-    PEER-INFO        TTL         HOSTNAME
-  127.0.0.1 40069     9          arthur
-  127.0.0.1 45490     9          corsair
+  PEERINFO-IP-PORT       TTL   HOSTNAME
+  64.104.169.98 51434    10    Annoymous
+  127.0.0.1 37807        10    corsair
+  127.0.0.1 58285        10    arthur
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  127.0.0.1 40069   ===>>   127.0.0.1 45490
-  127.0.0.1 45490   ===>>   127.0.0.1 40069
+*** --------------------------------------
+
+>>> setname giggle
+>>> list
+>>> Message From (10.124.10.102 13000):
+-------------------------- *** Login Info
+  PEERINFO-IP-PORT       TTL   HOSTNAME
+  64.104.169.98 51434    10    giggle
+  127.0.0.1 37807        10    corsair
+  127.0.0.1 58285        10    arthur
+*** --------------------------------------
+
+-------------------------- *** Punch Info
+*** --------------------------------------
+
+>>> punch 127.0.0.1 58285
+Want To Punch (127.0.0.1 58285)
+Sending PUNCH Packet To Server...
+
+>>> list
+>>> Message From (10.124.10.102 13000):
+-------------------------- *** Login Info
+  PEERINFO-IP-PORT       TTL   HOSTNAME
+  64.104.169.98 51434    10    giggle
+  127.0.0.1 37807        10    corsair
+  127.0.0.1 58285        10    arthur
+*** --------------------------------------
+
+-------------------------- *** Punch Info
+  127.0.0.1 58285   ===>>   64.104.169.98 51434
+  64.104.169.98 51434   ===>>   127.0.0.1 58285
 *** --------------------------------------
 
 On My Side:
 >>> can you speak English?
 >>> I am LiLei.
->>> Message From (127.0.0.1 40069): My name is HanMeiMei.
+>>> Message From (127.0.0.1 58285): My name is HanMeiMei.
 >>>
 
 Meanwhile On the Peer Side:
->>> Peer (127.0.0.1 45490) Want To Chat With You.
+>>> Peer (64.104.169.98 51434) Want To Chat With You.
 By Default, Auto Send Accept.
 
->>> Message From (127.0.0.1 45490): can you speak English?
->>> Message From (127.0.0.1 45490): I am LiLei.
+>>> Message From (64.104.169.98 51434): can you speak English?
+>>> Message From (64.104.169.98 51434): I am LiLei.
 >>> My name is HanMeiMei.
 >>> 
 
