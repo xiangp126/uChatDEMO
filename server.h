@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "common.h"
 
 using std::ostream;
@@ -11,7 +12,7 @@ using std::cout;
 using std::endl;
 
 #define LOGNAME     "./p2p_server.log"
-#define TICKS_INI   9    // count down from TICKS to 0, then timeout.
+#define TICKS_INI   10    // count down from TICKS to 0, then timeout.
 #define MAXHOSTLEN  15
 /* typedef variables and structure. */
 class TickInfo {

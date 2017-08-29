@@ -2,6 +2,7 @@
 #define COMMON_H_
 
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <unordered_set>
 #include <unordered_map>

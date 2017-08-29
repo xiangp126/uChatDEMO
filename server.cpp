@@ -4,6 +4,7 @@
 
 pthread_mutex_t ticksLock;
 pthread_mutexattr_t tickLockAttr;
+using namespace std;
 
 static ofstream logFile(LOGNAME, ofstream::app);
 
@@ -62,17 +63,34 @@ void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
 void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
                                            char *msg) {
     ostringstream oss;
+    ostringstream pOss;
+    string ip, port;
+
     oss << "\n-------------------------- *** Login Info\n"
-        << "    PEER-INFO    " << "    TTL  " << "       HOSTNAME\n";
+        << std::left << std::setfill(' ')
+        << "  "  << setw(21) << "PEERINFO-IP-PORT" 
+        << "  "  << setw(3)  << "TTL"
+        << "   " << setw(8)  << "HOSTNAME\n";
 
     pthread_mutex_lock(&ticksLock);
     auto iter1 = clientMap.begin();
     for (; iter1 != clientMap.end(); ++iter1) {
+        /* reformat port ip layout: 127.0.0.1 13000. */
+        ip = iter1->first.ip;
+        ip.push_back(' ');
 
-        oss << "  " << iter1->first.ip << " " << iter1->first.port 
-            << "     " << iter1->second.tick 
-            << "          " << iter1->second.hostname
-            << "\n";
+        /* clear str of pOss, notice that function pOss.clear()
+         * only reset the iostat. */
+        pOss.str("");
+        pOss.clear();
+        pOss << iter1->first.port;
+        port = pOss.str();
+        cout << port << endl;
+        ip += port;
+
+        oss << "  "  << setw(21) << ip
+            << "  "  << setw(3)  << iter1->second.tick 
+            << "   " << iter1->second.hostname << "\n";
     }
     oss << "*** --------------------------------------" << "\n";
 
@@ -273,7 +291,9 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
 
 void getSetHostName(PEERTICKTYPE &clientMap, PeerInfo &peer, char *payload) {
     char fWord[MAXHOSTLEN];
+#if 0
     cout << "####### payload ****" << payload << endl;
+#endif
     int cnt = 0;
     char *pTmp = payload;
     char *pSet = fWord;
