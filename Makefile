@@ -1,4 +1,3 @@
-
 CC = g++
 CFLAGXX = -Wall -g3 -std=c++11
 COMMON = common.cpp common.h

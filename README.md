@@ -9,18 +9,14 @@ easy but robust method.
 
 It is part of the p2p_communication-libev, which was updated Version of this Demo.
 
-You May Acquire Following Basic Knowledge Once Read The Source:
+You May be Familiar with Following Basic Knowledge As Read The Source:
 
-* Basic Linux Knowledge and Platform(CentOS/ArchLinux) Usage Experience
-* Basic Linux System Programming Skills, Such As:
-  + Lock and Condition Variable Usage, Reentrant Lock
-  + Synchronous I/O Multiplexing, select/poll/epoll and so on
-  + Thread Programming, Thread 'Suspend' from Outer
-* Basic Network Layer and Packet Structure Concept
-* Socket Programming, Basic Network Coding Knowledge
-* Basic C++ STL Knowledge, Such As unordered_map
+* Linux Distribution(CentOS/ArchLinux) Usage Experience
+* Lock Mechanism, Synchronous I/O Multiplexing Method
+* Thread and Network Socket Programming
+* Basic C++ and STL Library Knowledge
 
-Current version: 1.1.0 | [G++](http://www.cprogramming.com/g++.html)
+Current version: 1.2.0 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Features
 
@@ -28,14 +24,17 @@ This Demo was Implemented In C++, In general, has following features:
 
 ### V1.0.0
 * Whoami Client Query Support
-* RealTime Login & Punched Info Output
+* RealTime Login and Punched Info Output
 * KeepAlive Mechanism from Client to Server
 * Dynamic Connection Establishment
-* Directly peer to peer chat, without any redundant command word.
+* Directly peer to peer chat, without any redundant command word
 * Pretty Print on Server Side Message
 ### V1.1.0
 * Fix Bug: Let Logout Delete Punched Info 
 * Add SET hostname Support, Make Peer More Identified
+### V1.2.0
+* Fix Minor: fix length of command 'list' output
+* Add config.h for key parameters easily modify
 
 ## Usage
 

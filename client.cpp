@@ -36,7 +36,7 @@ void usage(void) {
 "    SETNAME: set hostname to make peer more identified. When logined, setname will\n"
 "             take effect at once. The hostname will be back to Annoymous after\n"
 "             logout. Format: setname [hostname], suck as: setname corsair\n"
-"             That is: setname only take effect when logined.\n"  
+"             That is: setname only take effect after logined.\n"  
 "    EXIT:    exit this program on your machine, same as CTRL + D.\n\n"
 
 "AUTHORS\n"

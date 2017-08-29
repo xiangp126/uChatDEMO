@@ -22,6 +22,7 @@
 #include <pthread.h>
 #include <signal.h>
 #include <assert.h>
+#include "config.h"
 
 using std::ostream;
 using std::ofstream;
@@ -29,14 +30,8 @@ using std::size_t;
 using std::unordered_set;
 using std::unordered_map;
 
-#define IBUFSIZ    1024
 #define FWORDLEN   10  /* first word length. */
 #define BINDADDR   "0"
-/* originally port 13000 was filtered by company firewall.
- * so use DNS port 53 to go through it if no other good 
- * choice found.
- */
-#define PORTNUM    13000 
 #define DEBUG      1
 #define MAX(a, b)  (a > b ? a : b)
 #define ABS(a)     (a >= 0 ? a : -a)

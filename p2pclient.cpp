@@ -39,9 +39,7 @@ int main(int argc, const char *argv[]) {
      */
     memset(&heartBServer, 0, sizeof(heartBServer));
     heartBServer.sockFd = sockFd;
-    /* if you want to change default heart beat interval, change this 
-     * below variable with unit us. */
-    heartBServer.sleep  = 2000 * 1000; // 2000 ms 
+    heartBServer.sleep  = HEARTINTERVAL; // 2000 ms default in config.h
     heartBServer.peer   = &server;
     heartBServer.tsType = THREADSWITCH::ISSERVER;
     /* already initiated server heart thread, but need additional global
