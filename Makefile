@@ -26,13 +26,13 @@ P2PSERVEROBJ = ${OBJDIR}/p2pserver.o ${OBJDIR}/server.o \
 			   						 ${OBJDIR}/common.o
 P2PCLIENTOBJ = ${OBJDIR}/p2pclient.o ${OBJDIR}/client.o \
 			   						 ${OBJDIR}/common.o
-p2pserver: ${P2PSERVEROBJ}
+p2pserver: common.o server.o p2pserver.o
 	${CC} -o $@ ${P2PSERVEROBJ} ${LIBS}
-p2pclient: ${P2PCLIENTOBJ}
+p2pclient: common.o client.o p2pclient.o
 	${CC} -o $@ ${P2PCLIENTOBJ} ${LIBS}
 
 .PYONY: clean
 clean: 
 	@echo "Removing binary and objects..."
-	-rm -rf *.o p2pserver p2pclient core *.log
+	-rm -rf *.o ${OBJDIR}/*.o p2pserver p2pclient core *.log
 
