@@ -1,7 +1,7 @@
 CC = g++
 CFLAGXX = -Wall -g3 -std=c++11
-INC = ./Inc
-OBJDIR = ./Objs
+INC = ./inc
+OBJDIR = ./objs
 COMMON = common.cpp ${INC}/common.h
 SERVER = server.cpp ${INC}/server.h
 CLIENT = client.cpp ${INC}/client.h
