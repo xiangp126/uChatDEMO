@@ -40,7 +40,7 @@ ostream & operator<<(ostream &out, PEERPUNCHEDTYPE &punchMap);
 void createClientSet();
 void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
 void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
-void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap, char *msg);
+void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,char *msg);
 void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
               PktInfo &packet, PeerInfo &peer);
 void *handleTicks(void *arg);

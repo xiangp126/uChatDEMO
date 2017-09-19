@@ -1,29 +1,35 @@
 CC = g++
 CFLAGXX = -Wall -g3 -std=c++11
-COMMON = common.cpp common.h
-SERVER = server.cpp server.h
-CLIENT = client.cpp client.h
-P2PSERVER = p2pserver.cpp server.h common.h
-P2PCLIENT = p2pclient.cpp client.h common.h
+INC = ./Inc
+OBJDIR = ./Objs
+COMMON = common.cpp ${INC}/common.h
+SERVER = server.cpp ${INC}/server.h
+CLIENT = client.cpp ${INC}/client.h
+P2PSERVER = p2pserver.cpp ${INC}/server.h ${INC}/common.h
+P2PCLIENT = p2pclient.cpp ${INC}/client.h ${INC}/common.h
 LIBS = -l pthread
 
 all: p2pserver p2pclient 
 
 common.o: ${COMMON}
-	${CC} -o $@ ${CFLAGXX} -c $<
+	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
 server.o: ${SERVER}
-	${CC} -o $@ ${CFLAGXX} -c $<
+	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC} 
 client.o: ${CLIENT}
-	${CC} -o $@ ${CFLAGXX} -c $<
+	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC} 
 p2pserver.o: ${P2PSERVER}
-	${CC} -o $@ ${CFLAGXX} -c $<
+	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
 p2pclient.o: ${P2PCLIENT}
-	${CC} -o $@ ${CFLAGXX} -c $< 
+	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
 
-p2pserver: p2pserver.o server.o common.o
-	${CC} -o $@ p2pserver.o server.o common.o ${LIBS}
-p2pclient: p2pclient.o client.o common.o
-	${CC} -o $@ p2pclient.o client.o common.o ${LIBS}
+P2PSERVEROBJ = ${OBJDIR}/p2pserver.o ${OBJDIR}/server.o \
+			   						 ${OBJDIR}/common.o
+P2PCLIENTOBJ = ${OBJDIR}/p2pclient.o ${OBJDIR}/client.o \
+			   						 ${OBJDIR}/common.o
+p2pserver: ${P2PSERVEROBJ}
+	${CC} -o $@ ${P2PSERVEROBJ} ${LIBS}
+p2pclient: ${P2PCLIENTOBJ}
+	${CC} -o $@ ${P2PCLIENTOBJ} ${LIBS}
 
 .PYONY: clean
 clean: 
