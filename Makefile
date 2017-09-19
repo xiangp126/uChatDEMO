@@ -23,9 +23,9 @@ p2pclient.o: ${P2PCLIENT}
 	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
 
 P2PSERVEROBJ = ${OBJDIR}/p2pserver.o ${OBJDIR}/server.o \
-			   						 ${OBJDIR}/common.o
+                                     ${OBJDIR}/common.o
 P2PCLIENTOBJ = ${OBJDIR}/p2pclient.o ${OBJDIR}/client.o \
-			   						 ${OBJDIR}/common.o
+                                     ${OBJDIR}/common.o
 p2pserver: common.o server.o p2pserver.o
 	${CC} -o $@ ${P2PSERVEROBJ} ${LIBS}
 p2pclient: common.o client.o p2pclient.o
