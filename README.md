@@ -1,5 +1,3 @@
-# p2p_communication-demo
-
 ## Design
 
 It is a Demo Tool for studying peer to peer communication through NAT. 
@@ -208,7 +206,7 @@ Packet Payload: HI Server.
 
 ### Prerequisites
 
-You should distribute it on Linux-like enviroment, and C++ compile such as g++
+You should distribute it on Linux-like enviroment, and C++ compiler such as g++
 must support C++11.
 
 Only C++0x support may not be enough.
