@@ -4,6 +4,8 @@ core
 *.swp
 *.swo
 *.pyc
+obj/
+bin/
 p2p_server.log
 p2pclient
 p2pserver

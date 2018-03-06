@@ -56,7 +56,7 @@ void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr) {
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&lock, &attr);
-    
+
     return;
 }
 
@@ -68,7 +68,7 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
 
     oss << "\n-------------------------- *** Login Info\n"
         << std::left << std::setfill(' ')
-        << "  "  << setw(21) << "PEERINFO-IP-PORT" 
+        << "  "  << setw(21) << "PEERINFO-IP-PORT"
         << "  "  << setw(3)  << "TTL"
         << "   " << setw(8)  << "HOSTNAME\n";
 
@@ -88,7 +88,7 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
         ip += port;
 
         oss << "  "  << setw(21) << ip
-            << "  "  << setw(3)  << iter1->second.tick 
+            << "  "  << setw(3)  << iter1->second.tick
             << "   " << iter1->second.hostname << "\n";
     }
     oss << "*** --------------------------------------" << "\n";
@@ -96,8 +96,8 @@ void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,
     oss << "\n-------------------------- *** Punch Info\n";
     auto iter2 = punchMap.begin();
     for (; iter2 != punchMap.end(); ++iter2) {
-        oss << "  " << iter2->first.ip << " " << iter2->first.port 
-            << "  " << " ===>> " 
+        oss << "  " << iter2->first.ip << " " << iter2->first.port
+            << "  " << " ===>> "
             << "  " << iter2->second.ip << " " << iter2->second.port
             << "\n";
     }
@@ -115,7 +115,7 @@ void *handleTicks(void *arg) {
         pthread_mutex_lock(&ticksLock);
         /* Erasing an element of a map invalidates iterators pointing
          * to that element (after all that element has been deleted).
-         * You shouldn't reuse that iterator, instead, advance the 
+         * You shouldn't reuse that iterator, instead, advance the
          * iterator to the next element before the deletion takes place.
          */
         auto iter = hashMap->begin();
@@ -150,7 +150,7 @@ void *handleTicks(void *arg) {
     return NULL;
 }
 
-void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
+void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                           PktInfo &packet, PeerInfo &peer) {
     char message[IBUFSIZ];
     memset(message, 0, IBUFSIZ);
@@ -159,14 +159,14 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
     PKTTYPE type = packet.getHead().type;
 
     switch (type) {
-        case PKTTYPE::MESSAGE: 
+        case PKTTYPE::MESSAGE:
             {
                 /* check if peer has punched pair. */
-                cout << "Message From " << peer << ". " << endl; 
+                cout << "Message From " << peer << ". " << endl;
                 pthread_mutex_lock(&ticksLock);
                 auto iterFind = punchMap.find(peer);
                 if (iterFind != punchMap.end()) {
-                    /* TYPE SYN inform peer to fetch getHead().peer info 
+                    /* TYPE SYN inform peer to fetch getHead().peer info
                      * from NET packet in addition with peer info. */
                     packet.getHead().type = PKTTYPE::SYN;
                     packet.getHead().peer = peer;
@@ -175,12 +175,12 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 pthread_mutex_unlock(&ticksLock);
                 break;
             }
-        case PKTTYPE::HEARTBEAT: 
+        case PKTTYPE::HEARTBEAT:
             {
                 pthread_mutex_lock(&ticksLock);
 
                 clientMap[peer].tick = TICKS_INI;
-        /* fix bug: under some uncertein circumstance handleTicks() 
+        /* fix bug: under some uncertein circumstance handleTicks()
          * will stop minus 'tick', so use upper code replacing below,
          * seems work good.
          */
@@ -197,13 +197,13 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 cout << "Heart Beat Received From " << peer << endl;
                 break;
             }
-        case PKTTYPE::LOGIN: 
+        case PKTTYPE::LOGIN:
             {
                 addClient(clientMap, peer);
                 cout << peer << " login." << endl;
                 break;
             }
-        case PKTTYPE::LOGOUT: 
+        case PKTTYPE::LOGOUT:
             {
                 delClient(clientMap, peer);
 #if 1
@@ -221,14 +221,14 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 cout << peer << " logout." << endl;
                 break;
             }
-        case PKTTYPE::LIST: 
+        case PKTTYPE::LIST:
             {
                 listInfo2Str(clientMap, punchMap, message);
                 makePacket(message, packet, PKTTYPE::MESSAGE);
                 udpSendPkt(sockFd, peer, packet);
                 break;
             }
-        case PKTTYPE::PUNCH: 
+        case PKTTYPE::PUNCH:
             {
                 PeerInfo tPeer = packet.getHead().peer;
                 cout << "From " << peer << " To " << tPeer << endl;
@@ -237,7 +237,7 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 pthread_mutex_lock(&ticksLock);
                 auto iterFind = clientMap.find(peer);
                 auto pFind = clientMap.find(tPeer);
-                if ((iterFind == clientMap.end()) 
+                if ((iterFind == clientMap.end())
                                   || (pFind == clientMap.end())) {
                     strcpy(message, "First, You Two Must All Be Logined.\
                                             \nJust Type 'list' to See Info.");
@@ -257,23 +257,23 @@ void onCalled(int sockFd, PEERTICKTYPE &clientMap,
                 udpSendPkt(sockFd, tPeer, packet);
                 break;
             }
-        case PKTTYPE::SYN: 
+        case PKTTYPE::SYN:
             {
                 cout << "From " << peer << endl;
                 break;
             }
-        case PKTTYPE::ACK: 
+        case PKTTYPE::ACK:
             {
                 break;
             }
-        case PKTTYPE::WHOAMI: 
+        case PKTTYPE::WHOAMI:
             {
                 makePacket(message, packet, PKTTYPE::WHOAMI);
                 packet.getHead().peer = peer;
                 udpSendPkt(sockFd, peer, packet);
                 break;
             }
-        case PKTTYPE::SETNAME: 
+        case PKTTYPE::SETNAME:
             {
                 /* get hostname sent by client and set it to TickInfo. */
                 getSetHostName(clientMap, peer, packet.getPayload());
@@ -302,7 +302,7 @@ void getSetHostName(PEERTICKTYPE &clientMap, PeerInfo &peer, char *payload) {
         ++cnt;
     }
 
-    /* while (*pTmp++ == ' '); 
+    /* while (*pTmp++ == ' ');
      * will omit the first character of hostname. BUG
      * */
     while (*pTmp == ' ') {

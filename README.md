@@ -1,24 +1,22 @@
 ## Design
 
-It is a Demo Tool for studying peer to peer communication through NAT. 
-
-As name Demo implied, this tool was Implemented using mid-man Transfer, which was the relatively
-easy but robust method.
-
-It is part of the p2p_communication-libev, which was updated Version of this Demo.
+- It is a tool implementation of peer to peer communication through NAT.
+    - communication method : udp
+    - principle : mid-man transfer
 
 Current version: 1.2.0 | [G++](http://www.cprogramming.com/g++.html)
 
-## Features
-
-This Demo was Implemented In C++, In general, has following features:
+## Feature List
 
 ### V1.2.0
+* fix bug on mac: ::bind() expliciyly
 * Fix Minor: fix length of command 'list' output
 * Add config.h for key parameters easily modify
+
 ### V1.1.0
-* Fix Bug: Let Logout Delete Punched Info 
+* Fix Bug: Let Logout Delete Punched Info
 * Add SET hostname Support, Make Peer More Identified
+
 ### V1.0.0
 * Whoami Client Query Support
 * RealTime Login and Punched Info Output
@@ -27,13 +25,45 @@ This Demo was Implemented In C++, In general, has following features:
 * Directly peer to peer chat, without any redundant command word
 * Pretty Print on Server Side Message
 
-## Usage
+## Quick Start
 
-For a detailed and complete list of all supported arguments,
-you may refer to the help pages of the applications, respectively.
+### Prerequisites
+
+- gcc must support c++ 11, only c++0x support not enough
+- you should has one linux server with public ip
+
+### Get the latest source code
 
 ```bash
+git clone https://github.com/xiangp126/uchat
+cd uchat
+make
+# p2pserver & p2pclient was generated
+```
 
+### Setup your server
+    on your server
+```bash
+vim config.h
+# change PORTNUM if needed
+# and ensure the listening port was not blocked by your company or ISP
+
+/* listen port on the server side */
+#define PORTNUM    13000
+
+make
+./bin/p2pserver
+Now listening on port 13000...
+
+```
+
+### Setup your client
+    on your client
+```bash
+make
+./bin/p2pclient [SERVER_IP] [LISTEN_PORT]
+>>>
+# type 'help'
 >>> help
 NAME
     p2pclient --- Client End of Peer to Peer communication Through NAT
@@ -44,7 +74,7 @@ USAGE
     as a word itself, just leave a blank before it. Default you chat with
     the server, after punched, you chat directly with the peer you punched.
 
-SYNOPSIS:
+PARAM:
     help
     list
     whoami
@@ -72,32 +102,30 @@ DESCRIPTION
 AUTHORS
        p2pclient is a DEMO for either further study or research purpose, you
        can modify or redistribute it whatever you want.
-
 ```
 
 ## EXAMPLE
 
-This example was both from the client and server point.
+    This example illustrates both the client and server side.
 
-On server side, the message reveived was pretty printed as default. 
+    On server side, the message reveived was pretty printed as default.
 
 ### Client Side
 
 ```bash
->>> help
-# too long not to paste here, lookup 'Usage' page.
-......
 >>> list
 >>> Message From (127.0.0.1 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  127.0.0.1 35079        10    arthur
-  127.0.0.1 47061        9     corsair
+  127.0.0.1 35079        10    arthur     <= already logined
+  127.0.0.1 47061        9     corsair    <= already logined
 *** --------------------------------------
 
 -------------------------- *** Punch Info
 *** --------------------------------------
 
+# arthur was another peer name set by >>> setname arthur
+# default name is Annoymous
 >>> punch arthur
 Usage Format: punch 127.0.0.1 18974
 Notice Not Leave any blank before 'punch'.
@@ -114,7 +142,7 @@ Just Type 'list' to See Info.
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 58404    10    Annoymous
+  64.104.169.98 58404    10    Annoymous   <= it's me, newly logined
   127.0.0.1 35079        9     arthur
   127.0.0.1 47061        9     corsair
 *** --------------------------------------
@@ -127,7 +155,7 @@ Just Type 'list' to See Info.
 >>> Message From (10.124.10.102 13000):
 -------------------------- *** Login Info
   PEERINFO-IP-PORT       TTL   HOSTNAME
-  64.104.169.98 58404    10    giggle
+  64.104.169.98 58404    10    giggle     <= rename default 'Annoymous' to giggle
   127.0.0.1 35079        10    arthur
   127.0.0.1 47061        10    corsair
 *** --------------------------------------
@@ -148,7 +176,7 @@ Sending PUNCH Packet To Server...
 *** --------------------------------------
 
 -------------------------- *** Punch Info
-  127.0.0.1 35079   ===>>   64.104.169.98 58404
+  127.0.0.1 35079   ===>>   64.104.169.98 58404     <= newly punched info (one pair)
   64.104.169.98 58404   ===>>   127.0.0.1 35079
 *** --------------------------------------
 
@@ -165,7 +193,7 @@ By Default, Auto Send Accept.
 >>> Message From (64.104.169.98 58404): can you speak English?
 >>> Message From (64.104.169.98 58404): I am LiLei.
 >>> My name is HanMeiMei.
->>> 
+>>>
 
 ```
 
@@ -201,44 +229,3 @@ Head PeerInfo = (0.0.0.0 0)
 Packet Payload: HI Server.
 
 ```
-
-## Installation
-
-### Prerequisites
-
-You should distribute it on Linux-like enviroment, and C++ compiler such as g++
-must support C++11.
-
-Only C++0x support may not be enough.
-
-### Get the latest source code
-
-```bash
-git clone https://github.com/xiangp126/p2p_communication-demo
-cd p2p_communication-demo
-make
-```
-
-### Setup your server
-
-```bash
-on server:
-step 1:
-In config.h change PORTNUM to the port you want it to listen to.
-step 2:
-./p2pserver 
-# default LISTEN_PORT is 13000
-Now listening on port 13000...
-```
-
-### Setup your client
-
-```bash
-on client:
-./p2pclient [SERVER_IP] [SERVER_PORT]
->>> 
-# type 'help' 
->>> help
-
-```
-

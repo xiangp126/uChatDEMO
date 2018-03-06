@@ -44,7 +44,7 @@ int main(int argc, const char *argv[]) {
     heartBServer.tsType = THREADSWITCH::ISSERVER;
     /* already initiated server heart thread, but need additional global
      * variable to lock / unlock this thread. */
-    rc = pthread_create(&tids[SERVERTID], NULL, sendHeartBeat, 
+    rc = pthread_create(&tids[SERVERTID], NULL, sendHeartBeat,
                                           (void *)&heartBServer);
     if (rc != 0) {
         oops("Create Heart Beat Thread to Server Error.");

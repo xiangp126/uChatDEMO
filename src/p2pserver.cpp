@@ -27,13 +27,13 @@ int main(int argc, const char *argv[]) {
     if (rc != 0) {
         oops("Create Keep Alive Thread Error.");
     }
-    
+
     /* Set Attribute of Lock to be Reentrant. onCalled -> ::LOGIN
      * will reentrant the lock. */
     pthread_mutexattr_init(&tickLockAttr);
     pthread_mutexattr_settype(&tickLockAttr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&ticksLock, &tickLockAttr);
-    
+
     while (1) {
         onCalled(sockFd, clientMap, packet, peer);
     }

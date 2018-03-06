@@ -24,11 +24,16 @@
 #include <assert.h>
 #include "config.h"
 
+using std::cout;
+using std::endl;
+using std::cerr;
 using std::ostream;
 using std::ofstream;
 using std::size_t;
 using std::unordered_set;
 using std::unordered_map;
+using std::hash;
+using std::string;
 
 #define FWORDLEN   10  /* first word length. */
 #define BINDADDR   "0"
@@ -146,7 +151,7 @@ void checkFirstWord(char *msg, char *cmd);
 void *sendHeartBeat(void *heartBeat);
 void write2Log(ofstream &out, char *err);
 void udpBindAddr(int sockFd, const char *bindAddr, int port);
-void makePacket(char *msg, PktInfo &pkt, 
+void makePacket(char *msg, PktInfo &pkt,
                  PKTTYPE type = PKTTYPE::MESSAGE);
 ssize_t udpSendPkt(int sockFd, const PeerInfo &msgTo, PktInfo &packet);
 ssize_t udpRecvPkt(int sockFd, PeerInfo &msgFrom, PktInfo &packet);
@@ -154,11 +159,11 @@ ssize_t udpSendTo(int sockId, const PeerInfo &msgTo, const char *msg);
 ssize_t udpRecvFrom(int sockId, PeerInfo &msgFrom, char *msg);
 
 // program is the phone, kernel is the ISP. Note BUFSIZ == 8192.
-/* 
+/*
  * step 1: get a line                       socket
  * step 2: assign phone number              bind
  * step 3: allow call coming                listen
- *         networking cables & power on 
+ *         networking cables & power on
  * step 4: wait for calls                   accept
  * step 5: speak with each other            read/write
  * step 6: end the call                     close

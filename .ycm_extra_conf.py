@@ -24,7 +24,8 @@ import ycm_core
 flags = [
 '-Wall',
 '-Wextra',
-'-Werror',
+#  Turn warning into an error.
+#  '-Werror',
 '-fexceptions',
 '-DNDEBUG',
 # THIS IS IMPORTANT! Without a "-std=<something>" flag, clang won't know which
@@ -45,7 +46,7 @@ flags = [
 '-isystem',
 '/usr/local/include',
 '-isystem',
-'/usr/include/c++/5',
+'/usr/include/c++/4.2.1',
 '-I.',
 '-I./include',
 '-I./inc'

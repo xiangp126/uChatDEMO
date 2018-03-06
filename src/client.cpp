@@ -14,16 +14,16 @@ void usage(void) {
 "    as a word itself, just leave a blank before it. Default you chat with\n"
 "    the server, after punched, you chat directly with the peer you punched.\n\n"
 
-"SYNOPSIS:\n"
+"PARAM:\n"
 "    help\n"
 "    list\n"
 "    whoami\n"
-"    punch [ip] [port]\n" 
+"    punch [ip] [port]\n"
 "    login\n"
 "    logout\n"
 "    setname [hostname]\n"
 "    exit\n\n"
-    
+
 "DESCRIPTION\n"
 "    HELP:    print this help info, you can type 'help' when needed.\n"
 "    LIST:    print logined and punched info. It's useful before 'punch'.\n"
@@ -32,11 +32,11 @@ void usage(void) {
 "             After punched, you talked directly to punched peer.\n"
 "             punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
 "    LOGIN:   login you existence to the server, may type 'list' when logined.\n"
-"    LOGOUT:  clear your login info on the server.\n" 
+"    LOGOUT:  clear your login info on the server.\n"
 "    SETNAME: set hostname to make peer more identified. When logined, setname will\n"
 "             take effect at once. The hostname will be back to Annoymous after\n"
 "             logout. Format: setname [hostname], suck as: setname corsair\n"
-"             That is: setname only take effect after logined.\n"  
+"             That is: setname only take effect after logined.\n"
 "    EXIT:    exit this program on your machine, same as CTRL + D.\n\n"
 
 "AUTHORS\n"
@@ -111,8 +111,8 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
     }
     /* 'read' from stdin, the 'carriage return' was read to string also,
      * which will cause strlen(string) plus one. This problem can be
-     * tackled by several methods. Below method is safe, except from 
-     * EOF discussed above, 'read' at least reads '\n' from stdin, thus 
+     * tackled by several methods. Below method is safe, except from
+     * EOF discussed above, 'read' at least reads '\n' from stdin, thus
      * rdSize is at least 1 if successfully read and not EOF.
      */
     msg[rdSize - 1] = '\0';   /* remove last '\n' */
@@ -123,8 +123,8 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
 
     /* 'read' from stdin, the 'carriage return' was read to string also,
      * which will cause strlen(string) plus one. This problem can be
-     * tackled by several methods. Below method is safe, except from 
-     * EOF discussed above, 'read' at least reads '\n' from stdin, thus 
+     * tackled by several methods. Below method is safe, except from
+     * EOF discussed above, 'read' at least reads '\n' from stdin, thus
      * rdSize is at least 1 if successfully read and not EOF.
      */
     switch (type) {
@@ -155,7 +155,7 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
                 if (rc == -1) {
                     cout << "Usage Format: punch 127.0.0.1 18974" << endl;
                     cout << "Notice Not Leave any blank before 'punch'.\n";
-                    return; 
+                    return;
                 }
                 int cnt = 0, MAXTRY = 1;
                 /* change packet type to PUNCH. */
@@ -168,7 +168,7 @@ void handleInput(int sockFd, PeerInfo &peer, PktInfo &packet) {
                 }
                 break;
             }
-        case PKTTYPE::SYN: 
+        case PKTTYPE::SYN:
             break;
         case PKTTYPE::HELP:
             {
@@ -202,7 +202,7 @@ void handleNet(int sockFd, PeerInfo &peer, PktInfo &packet) {
             break;
         case PKTTYPE::LOGOUT:
             break;
-        case PKTTYPE::ACK: 
+        case PKTTYPE::ACK:
             {
                 break;
             }
@@ -229,7 +229,7 @@ void handleNet(int sockFd, PeerInfo &peer, PktInfo &packet) {
                 break;
             }
         default:
-            cout << "Message From " << peer << ": " << packet.getPayload() 
+            cout << "Message From " << peer << ": " << packet.getPayload()
                                                     << endl;
             break;
     }

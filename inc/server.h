@@ -41,7 +41,7 @@ void createClientSet();
 void addClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
 void delClient(PEERTICKTYPE &clientMap, const PeerInfo &peer);
 void listInfo2Str(PEERTICKTYPE &clientMap, PEERPUNCHEDTYPE &punchMap,char *msg);
-void onCalled(int sockFd, PEERTICKTYPE &clientMap, 
+void onCalled(int sockFd, PEERTICKTYPE &clientMap,
               PktInfo &packet, PeerInfo &peer);
 void *handleTicks(void *arg);
 void setReentrant(pthread_mutex_t &lock, pthread_mutexattr_t &attr);

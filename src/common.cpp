@@ -1,8 +1,6 @@
 #include <iostream>
 #include "common.h"
 
-using namespace std;
-
 const int  SLEEPTIME  = 1000 * 1000;  // 1000 ms
 const int  PKTHEADLEN = sizeof(PktHead);
 const char *CMDS[] = {
@@ -39,7 +37,7 @@ ostream & operator<< (ostream &out, PktInfo &packet) {
 
 ostream & operator<< (ostream &out, PktHead &head) {
     out << "Head Type = " << CMDS[head.type] << endl;
-    out << "Payload length = " << head.length << 
+    out << "Payload length = " << head.length <<
                             " (Had + '\\0') " << endl;
     out << "Head PeerInfo = " << head.peer;
     fflush(stdout);
@@ -98,7 +96,7 @@ size_t HashFunc::operator()(const PeerInfo &peer) const {
 
 /* implement common API functions. */
 int udpGetSocket() {
-    /* step 1: ask kernel for a socket. 
+    /* step 1: ask kernel for a socket.
      * just as get a line of the phone. program is the phone.
      */
     int sockFd = socket(PF_INET, SOCK_DGRAM, 0);
@@ -118,7 +116,11 @@ void udpBindAddr(int sockFd, const char *bindAddr, int port) {
     servAddr.sin_addr.s_addr = inet_addr(bindAddr);
     servAddr.sin_family      = AF_INET;
     servAddr.sin_port        = htons(PORTNUM); /* host to network short(16b) */
-    if (bind(sockFd, (struct sockaddr *)&servAddr, sizeof(servAddr)) != 0) {
+    // fix bug on mac, should use ::bind not std::bind, care for func prototype
+    // "using namespace std" considered bad practice
+    // error: invalid operands to binary expression ('__bind<int &, sockaddr *,
+    //    unsigned long>' and 'int')
+    if (bind(sockFd, (struct sockaddr *)&servAddr, sizeof(servAddr)) < 0) {
         oops("bind error");
     }
 #endif
@@ -130,10 +132,10 @@ void makePacket(char *msg, PktInfo &pkt, PKTTYPE type) {
     char *payload = pkt.getPayload();
     ssize_t len   = 0;
     if (msg != NULL) {
-        len = strlen(msg);  
+        len = strlen(msg);
         /* truncate payload if it is too large. */
         len %= (IBUFSIZ - 1);
-        memcpy(payload, msg, len); 
+        memcpy(payload, msg, len);
     } else  {
         cerr << "Warnning: msg == NULL" << endl;
     }
@@ -142,7 +144,7 @@ void makePacket(char *msg, PktInfo &pkt, PKTTYPE type) {
      */
     payload[len] = '\0';
     pkt.getHead().type   = type;
-    pkt.getHead().length = len + 1; 
+    pkt.getHead().length = len + 1;
     PeerInfo tPeer;
     pkt.getHead().peer = tPeer;
 
@@ -166,7 +168,7 @@ ssize_t udpSendPkt(int sockFd, const PeerInfo &msgTo, PktInfo &packet) {
 #endif
     /* To fix a fatal sendto bug. I found that sometimes first 'login'
      * before any message sent,  will got sendto error. if oops() exit
-     * then the program was terminated. 
+     * then the program was terminated.
      * I want to check this sendSize for more than one times, if all
      * failed, then exit program.     Comment NO.1
      */
@@ -174,15 +176,15 @@ ssize_t udpSendPkt(int sockFd, const PeerInfo &msgTo, PktInfo &packet) {
     const int MAXTRYTIMES = 10;
     int tryCnt = 0;
     while (tryCnt < MAXTRYTIMES) {
-        sendSize = sendto(sockFd, 
+        sendSize = sendto(sockFd,
                     &packet,
                     len,
-                    MSG_DONTWAIT, 
-                    (const struct sockaddr *)&peerAddr, 
+                    MSG_DONTWAIT,
+                    (const struct sockaddr *)&peerAddr,
                     sizeof(peerAddr));
         if (sendSize == -1) {
-            /* As Comment NO.1, cannot figure out why, but is was 
-             * trully needed add this sleep for command 'login' 
+            /* As Comment NO.1, cannot figure out why, but is was
+             * trully needed add this sleep for command 'login'
              * stay away from send to error.
              */
             usleep(100);
@@ -204,7 +206,7 @@ ssize_t udpSendPkt(int sockFd, const PeerInfo &msgTo, PktInfo &packet) {
 ssize_t udpRecvPkt(int sockFd, PeerInfo &msgFrom, PktInfo &packet) {
     struct sockaddr_in peerAddr;
     /* take care! sLen must be initialized before use. */
-    socklen_t sLen = sizeof(peerAddr); 
+    socklen_t sLen = sizeof(peerAddr);
     memset(&peerAddr, 0, sizeof(peerAddr));
     memset(&packet, 0, sizeof(packet));
 
@@ -212,7 +214,7 @@ ssize_t udpRecvPkt(int sockFd, PeerInfo &msgFrom, PktInfo &packet) {
                                 &packet,
                                 sizeof(packet),
                                 0,
-                                (struct sockaddr *)&peerAddr, 
+                                (struct sockaddr *)&peerAddr,
                                 &sLen);
     if (recvSize == -1) {
         oops("recvfrom error");
@@ -231,11 +233,11 @@ ssize_t udpSendTo(int sockFd, const PeerInfo &msgTo, const char *msg) {
     peerAddr.sin_family      = AF_INET;
     peerAddr.sin_port        = htons(msgTo.port);
     peerAddr.sin_addr.s_addr = inet_addr(msgTo.ip);
-    ssize_t sendSize = sendto(sockFd, 
-                              msg, 
-                              strlen(msg), 
-                              MSG_DONTWAIT, 
-                              (const struct sockaddr *)&peerAddr, 
+    ssize_t sendSize = sendto(sockFd,
+                              msg,
+                              strlen(msg),
+                              MSG_DONTWAIT,
+                              (const struct sockaddr *)&peerAddr,
                               sizeof(peerAddr));
     if (sendSize == -1) {
         oops("sendto error");
@@ -253,7 +255,7 @@ ssize_t udpRecvFrom(int sockFd, PeerInfo &msgFrom, char *msg) {
                                 msg,
                                 IBUFSIZ,
                                 0,
-                                (struct sockaddr *)&peerAddr, 
+                                (struct sockaddr *)&peerAddr,
                                 &sLen);
     if (recvSize == -1) {
         oops("recvfrom error");
@@ -276,7 +278,7 @@ void checkFirstWord(char *msg, char *cmd) {
     memset(msg, 0, FWORDLEN);
     memcpy(msg, cmd, FWORDLEN);
     msg[FWORDLEN - 1] = '\0';
-    
+
     const char *pFast = msg;
     char *pSlow = msg;
     while (*pFast == ' ') {
@@ -318,11 +320,11 @@ void *sendHeartBeat(void *heartBeat) {
             udpSendPkt(info->sockFd, *(info->peer), packet);
             usleep(sleepTime);
             pthread_mutex_unlock(&pLock);
-            /* Strongly Notice here: must sleep some time after 
-             * pthread_mutex_unlock before next pthread_mutex_lock. 
-             * If not, other func changing 'condition' can not 
+            /* Strongly Notice here: must sleep some time after
+             * pthread_mutex_unlock before next pthread_mutex_lock.
+             * If not, other func changing 'condition' can not
              * acquire the lock, thus always blocked at pthread_
-             * mutex_lock. In one word, there must be some gap 
+             * mutex_lock. In one word, there must be some gap
              * time between unlock & next lock action.
              */
             usleep(200);

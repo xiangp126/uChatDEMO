@@ -1,38 +1,16 @@
 CC = g++
 CFLAGXX = -Wall -g3 -std=c++11
-INC = ./inc
-OBJDIR = ./objs
-COMMON = common.cpp ${INC}/common.h
-SERVER = server.cpp ${INC}/server.h
-CLIENT = client.cpp ${INC}/client.h
-P2PSERVER = p2pserver.cpp ${INC}/server.h ${INC}/common.h
-P2PCLIENT = p2pclient.cpp ${INC}/client.h ${INC}/common.h
-LIBS = -l pthread
+SHELL := /bin/bash
 
-all: p2pserver p2pclient 
-
-common.o: ${COMMON}
-	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
-server.o: ${SERVER}
-	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC} 
-client.o: ${CLIENT}
-	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC} 
-p2pserver.o: ${P2PSERVER}
-	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
-p2pclient.o: ${P2PCLIENT}
-	${CC} -o ${OBJDIR}/$@ ${CFLAGXX} -c $< -I ${INC}
-
-P2PSERVEROBJ = ${OBJDIR}/p2pserver.o ${OBJDIR}/server.o \
-                                     ${OBJDIR}/common.o
-P2PCLIENTOBJ = ${OBJDIR}/p2pclient.o ${OBJDIR}/client.o \
-                                     ${OBJDIR}/common.o
-p2pserver: common.o server.o p2pserver.o
-	${CC} -o $@ ${P2PSERVEROBJ} ${LIBS}
-p2pclient: common.o client.o p2pclient.o
-	${CC} -o $@ ${P2PCLIENTOBJ} ${LIBS}
+SRCDIR = src
+all:
+	@echo "Entering into ${SRCDIR}"
+	@cd ${SRCDIR} && ${MAKE}
+	@echo "Leaving from ${SRCDIR}"
 
 .PYONY: clean
-clean: 
-	@echo "Removing binary and objects..."
-	-rm -rf *.o ${OBJDIR}/*.o p2pserver p2pclient core *.log
-
+clean:
+	@echo -e "Entering into ${SRCDIR}"
+	@cd ${SRCDIR} && ${MAKE} clean
+	@echo "Leaving from ${SRCDIR}"
+	-rm -f p2p_server.log
