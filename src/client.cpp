@@ -14,7 +14,7 @@ void usage(void) {
 "    as a word itself, just leave a blank before it. Default you chat with\n"
 "    the server, after punched, you chat directly with the peer you punched.\n\n"
 
-"PARAM:\n"
+"COMMAND:\n"
 "    help\n"
 "    list\n"
 "    whoami\n"

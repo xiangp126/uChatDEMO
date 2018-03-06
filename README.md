@@ -1,29 +1,32 @@
 ## Design
 
-- It is a tool implementation of peer to peer communication through NAT.
+- It is a tool implementation of peer to peer chat through NAT.
     - communication method : udp
     - principle : mid-man transfer
 
 Current version: 1.2.0 | [G++](http://www.cprogramming.com/g++.html)
 
-## Feature List
+## Modification Note
 
 ### V1.2.0
-* fix bug on mac: ::bind() expliciyly
+* Fix bug on mac:, call ::bind() expliciyly
 * Fix Minor: fix length of command 'list' output
 * Add config.h for key parameters easily modify
 
 ### V1.1.0
+* Auto delete timeout peer info on server side
 * Fix Bug: Let Logout Delete Punched Info
 * Add SET hostname Support, Make Peer More Identified
 
 ### V1.0.0
+* Add 'Ctrl + D' quit of command line on client side
 * Whoami Client Query Support
 * RealTime Login and Punched Info Output
 * KeepAlive Mechanism from Client to Server
 * Dynamic Connection Establishment
 * Directly peer to peer chat, without any redundant command word
 * Pretty Print on Server Side Message
+* Make new packet type for communication
 
 ## Quick Start
 
@@ -42,7 +45,7 @@ make
 ```
 
 ### Setup your server
-    on your server
+on your server
 ```bash
 vim config.h
 # change PORTNUM if needed
@@ -58,7 +61,7 @@ Now listening on port 13000...
 ```
 
 ### Setup your client
-    on your client
+on your client
 ```bash
 make
 ./bin/p2pclient [SERVER_IP] [LISTEN_PORT]
@@ -74,7 +77,7 @@ USAGE
     as a word itself, just leave a blank before it. Default you chat with
     the server, after punched, you chat directly with the peer you punched.
 
-PARAM:
+COMMAND:
     help
     list
     whoami
@@ -106,9 +109,9 @@ AUTHORS
 
 ## EXAMPLE
 
-    This example illustrates both the client and server side.
+This example illustrates both the client and server side.
 
-    On server side, the message reveived was pretty printed as default.
+On server side, the message reveived was pretty printed as default.
 
 ### Client Side
 
@@ -227,5 +230,4 @@ Head Type = HEARTBEAT
 Payload length = 11 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
 Packet Payload: HI Server.
-
 ```
