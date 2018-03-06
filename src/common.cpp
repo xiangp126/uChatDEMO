@@ -347,4 +347,3 @@ void *sendHeartBeat(void *heartBeat) {
 
     return NULL;
 }
-

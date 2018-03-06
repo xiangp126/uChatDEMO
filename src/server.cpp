@@ -321,4 +321,3 @@ void getSetHostName(PEERTICKTYPE &clientMap, PeerInfo &peer, char *payload) {
 
     return;
 }
-

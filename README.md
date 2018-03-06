@@ -231,3 +231,6 @@ Payload length = 11 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
 Packet Payload: HI Server.
 ```
+
+## Reference
+[Principle of p2p Communication](http://www.cnblogs.com/pannengzhi/p/4800526.html)

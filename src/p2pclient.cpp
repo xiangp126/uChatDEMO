@@ -20,6 +20,13 @@ int main(int argc, const char *argv[]) {
     PktInfo  packet;
     pthread_t tids[MAXTID];
 
+    if (argc < 3) {
+        fprintf(stderr,
+                "Syntax:  p2pclient [SERVER_IP] [LISTEN_PORT]\n"
+                "Example: p2pclient 127.0.0.1 13000\n"
+        );
+        exit(1);
+    }
     memset(&server, 0, sizeof(server));
     memset(&peer, 0, sizeof(peer));
     memset(&packet, 0, sizeof(packet));
@@ -27,7 +34,7 @@ int main(int argc, const char *argv[]) {
     maxFd  = MAX(readFd1, sockFd) + 1;
     hp = gethostbyname(argv[1]);
     if (hp == NULL) {
-        oops("DNS lookup error");
+        oops("Syntax error, DNS lookup failed");
     }
     struct in_addr decAddr;
     memcpy(&decAddr, hp->h_addr, hp->h_length);
@@ -77,4 +84,3 @@ int main(int argc, const char *argv[]) {
     close(sockFd);
     return 0;
 }
-
