@@ -12,7 +12,7 @@ using std::cout;
 using std::endl;
 
 #define LOGNAME     "./p2p_server.log"
-#define MAXHOSTLEN  15
+#define MAXHOSTLEN  15     // maximum length of host name
 /* typedef variables and structure. */
 class TickInfo {
 public:

@@ -2,9 +2,11 @@
 #define CLIENT_H_
 
 #include "common.h"
+
 /* if want to send 'cmd type' packet, type cmd before any
  * words you typed. And if you only want to type word
- * 'cmd', type one blank space right before word 'cmd'.
+ * 'cmd' itself as message, type one blank space right
+ * before word 'cmd'.
  */
 enum {
     SERVERTID,

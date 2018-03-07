@@ -32,7 +32,7 @@ void usage(void) {
 "             After punched, you talked directly to punched peer.\n"
 "             punch [ip] [port], such as: punch [64.0.1.5] [12400]\n"
 "    LOGIN:   login you existence to the server, may type 'list' when logined.\n"
-"    LOGOUT:  clear your login info on the server.\n"
+"    LOGOUT:  clear your login info and stop sending heartbeat to the server.\n"
 "    SETNAME: set hostname to make peer more identified. When logined, setname will\n"
 "             take effect at once. The hostname will be back to Annoymous after\n"
 "             logout. Format: setname [hostname], suck as: setname corsair\n"

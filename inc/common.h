@@ -88,22 +88,25 @@ extern pthread_cond_t  pCond;
 extern int pGlobal;
 
 #if 1
-/* PeerInfo is self-defined structure, so did not originally has
- * hash function, you must overload it with PeerInfo as its para-
- * meter or it will compile error.
+/* PeerInfo is a self-defined structure, so
+ * std::map did not has hash function whose para is type PeerInfo
+ * and when add PeerInfo element into std::map, std::map did not
+ * know how to hash it, which will end with compile error.
+ * so need define new HashFunc and overload its 'call' func
+ * with PeerInfo as its parameter.
  */
 class PeerInfo {
 public:
-    char ip[INET_ADDRSTRLEN + 1];
+    char ip[INET_ADDRSTRLEN];  // 255.255.255.255 => 15 + 1 = 16
     int  port;
 public:
     /* if need sort, must overload operator<  */
     PeerInfo(char *_ip = "0.0.0.0", int _port = 0);
-    PeerInfo(const PeerInfo &peer);
+    PeerInfo(const PeerInfo &);
     ~PeerInfo() {}
-    bool operator== (const PeerInfo &peer) const;
-    void operator= (const PeerInfo &peer);
-    friend ostream & operator<<(ostream &out, const PeerInfo &peer);
+    bool operator== (const PeerInfo &) const;
+    void operator= (const PeerInfo &);
+    friend ostream & operator<<(ostream &, const PeerInfo &);
 };
 #endif
 
@@ -117,7 +120,7 @@ public:
 //        char unused[sizeof(PeerInfo)];
 //    };
 public:
-    friend ostream & operator<< (ostream &out, PktHead &head);
+    friend ostream & operator<< (ostream &, PktHead &);
 };  // sizeof(PktHead)
 
 class PktInfo {
@@ -128,15 +131,15 @@ public:
     PktInfo();
     PktHead & getHead() {return head;}
     char *getPayload() {return payload;}
-    friend ostream & operator<< (ostream &out, PktInfo &packet);
-}; // sizeof PktInfo == (4 + 4) + 8192
+    friend ostream & operator<< (ostream &, PktInfo &);
+}; // sizeof PktInfo == (4 + 4 + 20) + 8192
 
 class HashFunc {
 public:
-    /* overload call operator */
-    size_t operator()(const PeerInfo &peer) const;
+    /* overload 'call' operator */
+    size_t operator()(const PeerInfo &) const;
 };
-/* only useful for transferring into heat beat thread func */
+/* only useful for transferring into heart beat thread func */
 struct HeartParm {
     int sockFd;
     int sleep;
@@ -164,7 +167,7 @@ ssize_t udpRecvFrom(int sockId, PeerInfo &msgFrom, char *msg);
  * step 2: assign phone number              bind
  * step 3: allow call coming                listen
  *         networking cables & power on
- * step 4: wait for calls                   accept
+ * step 4: call coming					    accept
  * step 5: speak with each other            read/write
  * step 6: end the call                     close
  */

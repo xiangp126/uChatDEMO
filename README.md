@@ -95,7 +95,7 @@ DESCRIPTION
              After punched, you talked directly to punched peer.
              punch [ip] [port], such as: punch [64.0.1.5] [12400]
     LOGIN:   login you existence to the server, may type 'list' when logined.
-    LOGOUT:  clear your login info on the server.
+    LOGOUT:  clear your login info and stop sending heartbeat to the server.
     SETNAME: set hostname to make peer more identified. When logined, setname will
              take effect at once. The hostname will be back to Annoymous after
              logout. Format: setname [hostname], suck as: setname corsair

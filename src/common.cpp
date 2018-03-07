@@ -107,7 +107,6 @@ int udpGetSocket() {
 }
 
 void udpBindAddr(int sockFd, const char *bindAddr, int port) {
-#if 1
     struct sockaddr_in servAddr;
     /* step 2: bind address to socket. Address is host & port.
      * just as bind phone number to the phone.
@@ -123,7 +122,6 @@ void udpBindAddr(int sockFd, const char *bindAddr, int port) {
     if (bind(sockFd, (struct sockaddr *)&servAddr, sizeof(servAddr)) < 0) {
         oops("bind error");
     }
-#endif
     return;
 }
 
@@ -145,6 +143,7 @@ void makePacket(char *msg, PktInfo &pkt, PKTTYPE type) {
     payload[len] = '\0';
     pkt.getHead().type   = type;
     pkt.getHead().length = len + 1;
+    // add default peer info
     PeerInfo tPeer;
     pkt.getHead().peer = tPeer;
 
@@ -167,7 +166,7 @@ ssize_t udpSendPkt(int sockFd, const PeerInfo &msgTo, PktInfo &packet) {
     cout << msgTo << endl;
 #endif
     /* To fix a fatal sendto bug. I found that sometimes first 'login'
-     * before any message sent,  will got sendto error. if oops() exit
+     * before any message sent, will got sendto error. if oops() exit
      * then the program was terminated.
      * I want to check this sendSize for more than one times, if all
      * failed, then exit program.     Comment NO.1
@@ -209,7 +208,6 @@ ssize_t udpRecvPkt(int sockFd, PeerInfo &msgFrom, PktInfo &packet) {
     socklen_t sLen = sizeof(peerAddr);
     memset(&peerAddr, 0, sizeof(peerAddr));
     memset(&packet, 0, sizeof(packet));
-
     ssize_t recvSize = recvfrom(sockFd,
                                 &packet,
                                 sizeof(packet),
