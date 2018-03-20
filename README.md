@@ -4,7 +4,7 @@
     - communication method : udp
     - principle : mid-man transfer
 
-Current version: 1.2.0 | [G++](http://www.cprogramming.com/g++.html)
+Current version: 1.2.1 | [G++](http://www.cprogramming.com/g++.html)
 
 ## Modification Note
 
