@@ -232,5 +232,5 @@ Head PeerInfo = (0.0.0.0 0)
 Packet Payload: HI Server.
 ```
 
-## Reference
-[Principle of p2p Communication](http://www.cnblogs.com/pannengzhi/p/4800526.html)
+## License
+The [MIT](https://github.com/xiangp126/uchat/blob/master/LICENSE.txt) License(MIT)
