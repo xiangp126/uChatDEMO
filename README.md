@@ -1,39 +1,15 @@
-## Design
+## Illustrate
 
 - It is a tool implementation of peer to peer chat through NAT.
     - communication method : udp
     - principle : mid-man transfer
 
-Current version: 1.2.1 | [G++](http://www.cprogramming.com/g++.html)
+> Current version: 1.2.1 | [G++](http://www.cprogramming.com/g++.html)
 
-## Modification Note
-
-### V1.2.0
-* Fix bug on mac:, call ::bind() expliciyly
-* Fix Minor: fix length of command 'list' output
-* Add config.h for key parameters easily modify
-
-### V1.1.0
-* Auto delete timeout peer info on server side
-* Fix Bug: Let Logout Delete Punched Info
-* Add SET hostname Support, Make Peer More Identified
-
-### V1.0.0
-* Add 'Ctrl + D' quit of command line on client side
-* Whoami Client Query Support
-* RealTime Login and Punched Info Output
-* KeepAlive Mechanism from Client to Server
-* Dynamic Connection Establishment
-* Directly peer to peer chat, without any redundant command word
-* Pretty Print on Server Side Message
-* Make new packet type for communication
-
-## Quick Start
-
+## User Guide
 ### Prerequisites
-
-- gcc must support c++ 11, only c++0x support not enough
-- you should has one linux server with public ip
+> gcc must support c++ 11, only c++0x support not enough<br>
+> you should has one linux server with public ip
 
 ### Get the latest source code
 
@@ -41,11 +17,12 @@ Current version: 1.2.1 | [G++](http://www.cprogramming.com/g++.html)
 git clone https://github.com/xiangp126/uchat
 cd uchat
 make
-# p2pserver & p2pclient was generated
+# will generate p2pserver & p2pclient
 ```
 
 ### Setup your server
-on your server
+> on your server
+
 ```bash
 vim config.h
 # change PORTNUM if needed
@@ -57,13 +34,15 @@ vim config.h
 make
 ./bin/p2pserver
 Now listening on port 13000...
-
 ```
 
 ### Setup your client
-on your client
-```bash
+> on your client
+
+```makefile
 make
+```
+```bash
 ./bin/p2pclient [SERVER_IP] [LISTEN_PORT]
 >>>
 # type 'help'
@@ -107,13 +86,12 @@ AUTHORS
        can modify or redistribute it whatever you want.
 ```
 
-## EXAMPLE
+### EXAMPLE
 
-This example illustrates both the client and server side.
-
+> This example illustrates both the client and server side.
 On server side, the message reveived was pretty printed as default.
 
-### Client Side
+#### Client Side
 
 ```bash
 >>> list
@@ -200,10 +178,9 @@ By Default, Auto Send Accept.
 
 ```
 
-### Server Side
+#### Server Side
 
 ```bash
-
 Head Type = MESSAGE
 Payload length = 424 (Had + '\0')
 Head PeerInfo = (0.0.0.0 0)
