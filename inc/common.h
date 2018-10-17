@@ -167,7 +167,7 @@ ssize_t udpRecvFrom(int sockId, PeerInfo &msgFrom, char *msg);
  * step 2: assign phone number              bind
  * step 3: allow call coming                listen
  *         networking cables & power on
- * step 4: call coming					    accept
+ * step 4: call coming                      accept
  * step 5: speak with each other            read/write
  * step 6: end the call                     close
  */
